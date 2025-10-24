@@ -43,11 +43,11 @@ palabra_clave_crud = CRUDBase(models.PalabrasClaves)
 def listar_rubros(db: Session = Depends(get_db)):
     return db.query(models.Rubros).filter(models.Rubros.deleted == False).order_by(models.Rubros.nombre).all()
 
-@app.post("/Rubros/", response_model=schemas.Rubros)
+@app.post("/Rubros/")
 def crear_rubro(registro: schemas.Rubros, db: Session = Depends(get_db)):
     return rubro_crud.create(db, registro)
 
-@app.put("/Rubros/{rubro_id}", response_model=schemas.Rubros)
+@app.put("/Rubros/{rubro_id}")
 def actualizar_rubro(rubro_id: int, registro: schemas.Rubros, db: Session = Depends(get_db)):
     return rubro_crud.update(db, rubro_id, registro)
 
