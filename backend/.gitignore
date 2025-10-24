@@ -1,0 +1,15 @@
+# Ignorar archivos de entorno
+
+# Carpetas de entornos virtuales
+venv/
+# Archivos de configuración locales
+#*.env
+# SQLite DB
+#dbContactoUshuaia.db
+
+# === Docker ===
+*.pid
+*.tar
+*.log
+.docker/
+docker-compose.override.yml
