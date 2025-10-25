@@ -28,8 +28,8 @@ class RubrosXContratistas(BaseModel):
     sumatoriaPuntuados: int
     habilitado: int
     deleted: bool | None = False
-    rubros: Optional[Rubros]  # relación
-    contratistas: Optional[Contratistas]  # relación
+    rubros: Optional[Rubros] = None  # relación
+    contratistas: Optional[Contratistas] = None # relación
     class Config:
         from_attributes = True  # Linux
 
@@ -38,6 +38,6 @@ class PalabrasClaves(BaseModel):
     rubrosId: int  # clave foránea
     nombre: Optional[str]
     deleted: bool | None = False
-    rubros: Optional[Rubros] # relación
+    rubros: Optional[Rubros] = None # relación
     class Config:
         from_attributes = True  # Linux

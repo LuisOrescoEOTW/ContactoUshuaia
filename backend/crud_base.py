@@ -15,12 +15,12 @@ class CRUDBase:
         return obj
 
     def create(self, db: Session, obj_in):
-        nuevo = self.model(**obj_in.dict())
+        nuevo = self.model(**obj_in.dict(exclude_unset=True, exclude={"rubros", "contratistas"}))
         db.add(nuevo)
         db.commit()
         db.refresh(nuevo)
         return nuevo
-
+    
     def update(self, db: Session, id: int, obj_in):
         obj = self.get_by_id(db, id)
         for key, value in obj_in.dict(exclude_unset=True).items():
