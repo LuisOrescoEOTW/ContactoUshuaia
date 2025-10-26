@@ -77,6 +77,10 @@ def borrarContratistas(contratistas_id: int, db: Session = Depends(get_db)):
 def listarRubrosXContratistas(db: Session = Depends(get_db)):
     return db.query(models.RubrosXContratistas).filter(models.RubrosXContratistas.deleted == False).order_by(models.RubrosXContratistas.rubrosId).all()
 
+@app.get("/RubrosXContratistas/{contratista_id}", response_model=list[schemas.RubrosXContratistas])
+def listarRubrosXContratistasByContratista(contratista_id: int, db: Session = Depends(get_db)):
+    return db.query(models.RubrosXContratistas).filter(models.RubrosXContratistas.deleted == False, models.RubrosXContratistas.contratistasId == contratista_id).order_by(models.RubrosXContratistas.rubrosId).all()
+
 @app.post("/RubrosXContratistas/")
 def crearRubrosXContratistas(registro: schemas.RubrosXContratistas, db: Session = Depends(get_db)):
     return rubroxcontratista_crud.create(db, registro)
@@ -93,6 +97,18 @@ def borrarRubrosXContratistas(rubroxcontratista_id: int, db: Session = Depends(g
 @app.get("/PalabrasClaves/", response_model=list[schemas.PalabrasClaves])
 def listarPalabrasClaves(db: Session = Depends(get_db)):
     return db.query(models.PalabrasClaves).filter(models.PalabrasClaves.deleted == False).order_by(models.PalabrasClaves.nombre).all()
+
+#Get listado de nombres únicos
+@app.get("/PalabrasClaves/nombresUnicos", response_model=list[str])
+def listarPalabrasClavesByNombreUnicos(db: Session = Depends(get_db)):
+    nombres = (db.query(models.PalabrasClaves.nombre).filter(models.PalabrasClaves.deleted == False).group_by(models.PalabrasClaves.nombre).order_by(models.PalabrasClaves.nombre).all())
+    # Convierte [("bomba",), ("caño",), ("caldera",)] → ["bomba", "caño", "caldera"]
+    return [n[0] for n in nombres]
+
+# Get por nombre
+@app.get("/PalabrasClaves/{nombre}", response_model=list[schemas.PalabrasClaves])
+def listarPalabrasClavesByNombre(nombre: str, db: Session = Depends(get_db)):
+    return db.query(models.PalabrasClaves).filter(models.PalabrasClaves.deleted == False, models.PalabrasClaves.nombre == nombre).order_by(models.PalabrasClaves.nombre).all()
 
 @app.post("/PalabrasClaves/")
 def crearPalabraClave(registro: schemas.PalabrasClaves, db: Session = Depends(get_db)):
