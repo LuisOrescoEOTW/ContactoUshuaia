@@ -1,7 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
+import { rubrosSlice } from './slices/rubros/rubrosSlice'
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    rubros: rubrosSlice.reducer,
+    
+  },
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
