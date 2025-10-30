@@ -29,7 +29,7 @@ class RubrosXContratistas(Base):
     contratistasId = Column(Integer, ForeignKey("Contratistas.id"))  # clave foránea
     cantidadPuntuados = Column(Integer)
     sumatoriaPuntuados = Column(Integer)
-    habilitado = Column(Integer)
+    habilitado = Column(Boolean, default=False)
     deleted = Column(Boolean, default=False)
     rubros = relationship("Rubros")  # relación
     contratistas = relationship("Contratistas")  # relación

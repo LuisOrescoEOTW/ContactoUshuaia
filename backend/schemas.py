@@ -26,7 +26,7 @@ class RubrosXContratistas(BaseModel):
     contratistasId: int  # clave foránea
     cantidadPuntuados: int
     sumatoriaPuntuados: int
-    habilitado: int
+    habilitado: bool | None = False
     deleted: bool | None = False
     rubros: Optional[Rubros] = None  # relación
     contratistas: Optional[Contratistas] = None # relación
