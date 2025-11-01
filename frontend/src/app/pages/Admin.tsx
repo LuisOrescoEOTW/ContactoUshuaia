@@ -2,13 +2,21 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { getRubros } from "../../redux/slices/rubros/rubrosThunks";
-import { Fab, Modal, Paper, Tooltip } from "@mui/material";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Fab,
+  Modal,
+  Paper,
+  Tooltip,
+} from "@mui/material";
 import {
   DataGrid,
   type GridColDef,
   type GridRowSelectionModel,
 } from "@mui/x-data-grid";
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Add, Delete, Edit, Style } from "@mui/icons-material";
 import type { Irubros } from "../models/Irubros";
 import { RubrosForm } from "../components/RubrosForm";
 
@@ -46,7 +54,11 @@ export const Admin = () => {
             <Fab
               size="small"
               color="primary"
-              onClick={() => (setEditState(params.row), setModalAbrir(true))}
+              onClick={(e) => {
+                (e.currentTarget as HTMLButtonElement).blur();
+                setEditState(params.row);
+                setModalAbrir(true);
+              }}
             >
               <Edit fontSize="small" />
             </Fab>
@@ -97,8 +109,8 @@ export const Admin = () => {
       style={{
         display: "grid",
         gridTemplateColumns: "1fr 1fr 1fr 1fr",
-        width: "80vw",
-        height: "52vh",
+        width: "99vw",
+        height: "40vh",
         // margin: "0 auto",
       }}
     >
@@ -108,14 +120,25 @@ export const Admin = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            backgroundColor: "#008F9E",
+            marginBottom: "1%",
+            paddingLeft: "3%",
+            paddingRight: "3%",
+            borderRadius: "20px",
+            color: "white",
           }}
         >
           <h2>Rubros</h2>
-          <div style={{ textAlign: "end", paddingRight: "2%" }}>
-            <Tooltip title="Agregar" aria-label="add">
+          <div style={{ textAlign: "end" }}>
+            <Tooltip title="Agregar">
               <Fab
                 color="success"
-                onClick={() => (setModalAbrir(true), setEditState(null))}
+                size="small"
+                onClick={(e) => {
+                  (e.currentTarget as HTMLButtonElement).blur(); // 👈 quita el foco
+                  setEditState(null);
+                  setModalAbrir(true);
+                }}
               >
                 <Add />
               </Fab>
@@ -123,7 +146,7 @@ export const Admin = () => {
           </div>
         </div>
 
-        <Paper sx={{ width: "100%", height: "92%" }}>
+        <Paper sx={{ width: "100%", height: "100%" }}>
           <DataGrid
             rows={rubros}
             columns={columnsRubros}
@@ -136,17 +159,35 @@ export const Admin = () => {
             sx={{
               width: "100%",
               height: "100%",
-              border: 0,
+              border: 2,
+              borderColor: "#D9D9D9",
               "& .MuiDataGrid-virtualScroller": { overflow: "auto" },
             }}
           />
         </Paper>
       </div>
 
-      {/* Modal Nuevo - Editar */}
-      <Modal open={modalAbrir} onClose={() => (setModalAbrir(false), setEditState(null))} >
-        <RubrosForm editState={editState} />
-      </Modal>
+      {/* <Dialog open={modalAbrir} onClose={() => setModalAbrir(false)}>
+        <DialogTitle
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            backgroundColor: "#008F9E",
+            color: "white",
+          }}
+        >
+          {editState ? "Editar Rubro" : "Nuevo Rubro"}
+        </DialogTitle>
+        <DialogContent>
+          <RubrosForm editState={editState} />
+        </DialogContent>
+      </Dialog> */}
+      <RubrosForm
+        open={modalAbrir}
+        onClose={() => (setModalAbrir(false), setEditState(null))}
+        editState={editState}
+      />
     </div>
   );
 };

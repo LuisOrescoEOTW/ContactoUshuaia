@@ -19,7 +19,7 @@ export const getRubros = () => {
 export const getRubroById = (id: number) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const { data } = await Api.get(`/rubros/${id}`);
+      const { data } = await Api.get(`/Rubros/${id}`);
       dispatch(setRubros({ rubros: data }));
     } catch (error) {
       console.error("Error en getById:", error);
@@ -29,10 +29,10 @@ export const getRubroById = (id: number) => {
 
 //Insertar Nuevo
 export const postRubros = (data: Irubros) => {
-  return async () => {
+  return async (dispatch: AppDispatch) => {
     try {
-      await Api.post("/rubros", data);
-      //dispatch(getRubros()); // Para refrescar la lista después de agregar
+      await Api.post("/Rubros", data);
+      dispatch(getRubros()); // Para refrescar la lista después de agregar
     } catch (error) {
       console.error("Error en post:", error);
     }
@@ -41,10 +41,10 @@ export const postRubros = (data: Irubros) => {
 
 //Modificar
 export const putRubros = (data: Irubros) => {
-  return async () => {
+  return async (dispatch: AppDispatch) => {
     try {
-      await Api.put(`/rubros/${data.id}`, data);
-      //dispatch(getRubros()); // Para refrescar la lista después de actualizar
+      await Api.put(`/Rubros/${data.id}`, data);
+      dispatch(getRubros()); // Para refrescar la lista después de actualizar
     } catch (error) {
       console.error("Error en put:", error);
     }
@@ -53,11 +53,11 @@ export const putRubros = (data: Irubros) => {
 
 //Eliminar
 export const deleteRubros = (data: number) => {
-  //return async (dispatch: AppDispatch) => {
-  return async () => {
+  return async (dispatch: AppDispatch) => {
+  // return async () => {
     try {
-      await Api.delete(`/rubros/${data}`);
-      //dispatch(getRubros()); // Para refrescar la lista después de actualizar
+      await Api.delete(`/Rubros/${data}`);
+      dispatch(getRubros()); // Para refrescar la lista después de actualizar
     } catch (error) {
       console.error("Error en delete:", error);
     }
