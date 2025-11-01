@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
-import { getRubros } from "../../redux/slices/rubros/rubrosThunks";
+import { deleteRubros, getRubros } from "../../redux/slices/rubros/rubrosThunks";
 import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
   Fab,
-  Modal,
   Paper,
   Tooltip,
 } from "@mui/material";
@@ -16,9 +12,11 @@ import {
   type GridColDef,
   type GridRowSelectionModel,
 } from "@mui/x-data-grid";
-import { Add, Delete, Edit, Style } from "@mui/icons-material";
+import { toast } from "react-toastify";
+import { Add, Delete, Edit } from "@mui/icons-material";
 import type { Irubros } from "../models/Irubros";
 import { RubrosForm } from "../components/RubrosForm";
+import AlertDialogEliminar from "../hooks/AlertDialogEliminar";
 
 export const Admin = () => {
   // Leer
@@ -67,7 +65,7 @@ export const Admin = () => {
             <Fab
               size="small"
               color="error"
-              onClick={() => handleDelete(params.row.id)}
+              onClick={() => { setDeleteId(params.row.id); setOpenDialog(true) }}
             >
               <Delete fontSize="small" />
             </Fab>
@@ -97,11 +95,16 @@ export const Admin = () => {
   const [modalAbrir, setModalAbrir] = useState(false);
   const [editState, setEditState] = useState<Irubros | null>(null);
 
-  // Función para eliminar
-  const handleDelete = (id: number) => {
-    // Aquí puedes agregar la lógica para eliminar
-    console.log("Eliminar id:", id);
-    // Por ejemplo: dispatch(deleteRubros(id));
+  //Borrar
+  const [deleteId, setDeleteId] = useState<number | null>(null); // ID a eliminar
+  const [openDialog, setOpenDialog] = useState(false);
+  const handleDialogClose = (confirmDelete: boolean) => {
+    if (confirmDelete && deleteId !== null) {
+      dispatch(deleteRubros(deleteId));
+    }
+    setDeleteId(null);
+    setOpenDialog(false);
+    toast.success("Elemento eliminado exitosamente");
   };
 
   return (
@@ -111,9 +114,10 @@ export const Admin = () => {
         gridTemplateColumns: "1fr 1fr 1fr 1fr",
         width: "99vw",
         height: "40vh",
-        // margin: "0 auto",
       }}
     >
+
+      {/* Rubros */}
       <div>
         <div
           style={{
@@ -167,26 +171,17 @@ export const Admin = () => {
         </Paper>
       </div>
 
-      {/* <Dialog open={modalAbrir} onClose={() => setModalAbrir(false)}>
-        <DialogTitle
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "#008F9E",
-            color: "white",
-          }}
-        >
-          {editState ? "Editar Rubro" : "Nuevo Rubro"}
-        </DialogTitle>
-        <DialogContent>
-          <RubrosForm editState={editState} />
-        </DialogContent>
-      </Dialog> */}
+      {/* Alta - Modificaciones */}
       <RubrosForm
         open={modalAbrir}
         onClose={() => (setModalAbrir(false), setEditState(null))}
         editState={editState}
+      />
+      
+      {/* Modal Eliminar */}
+      <AlertDialogEliminar
+        open={openDialog}
+        onClose={handleDialogClose}
       />
     </div>
   );
