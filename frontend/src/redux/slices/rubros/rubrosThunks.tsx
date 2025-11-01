@@ -7,7 +7,7 @@ import { setRubros } from "./rubrosSlice";
 export const getRubros = () => {
   return async (dispatch: AppDispatch) => {
     try {
-      const { data } = await Api.get(`/Rubros`);
+      const { data } = await Api.get(`/Rubros/`);
       dispatch(setRubros({ rubros: data }));
     } catch (error) {
       console.error("Error en getAll:", error);
@@ -31,7 +31,7 @@ export const getRubroById = (id: number) => {
 export const postRubros = (data: Irubros) => {
   return async (dispatch: AppDispatch) => {
     try {
-      await Api.post("/Rubros", data);
+      await Api.post("/Rubros/", data);
       dispatch(getRubros()); // Para refrescar la lista después de agregar
     } catch (error) {
       console.error("Error en post:", error);
@@ -54,7 +54,6 @@ export const putRubros = (data: Irubros) => {
 //Eliminar
 export const deleteRubros = (data: number) => {
   return async (dispatch: AppDispatch) => {
-  // return async () => {
     try {
       await Api.delete(`/Rubros/${data}`);
       dispatch(getRubros()); // Para refrescar la lista después de actualizar

@@ -12,6 +12,7 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
+import { toast } from "react-toastify";
 
 interface Props {
   open: boolean;
@@ -49,9 +50,13 @@ export const RubrosForm: React.FC<Props> = ({ open, onClose, editState }) => {
   // Guardar (Agregar/Editar)
   const onSubmit = (data: Irubros) => {
     if (editState) {
-      dispatch(putRubros(data));
+      dispatch(putRubros(data))
+        .then(() => toast.info("Elemento modificado"))
+        .catch(() => toast.error("Error al modificar el elemento"));
     } else {
-      dispatch(postRubros(data));
+      dispatch(postRubros(data))
+        .then(() => toast.success("Elemento agregado"))
+        .catch(() => toast.error("Error al agregar el elemento"));
     }
     onClose(); // Cerrar modal después de agregar/editar
   };
@@ -118,7 +123,9 @@ export const RubrosForm: React.FC<Props> = ({ open, onClose, editState }) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} variant="contained" color="error">Cancelar</Button>
+        <Button onClick={onClose} variant="contained" color="error">
+          Cancelar
+        </Button>
         <Button
           onClick={handleSubmit(onSubmit)}
           variant="contained"

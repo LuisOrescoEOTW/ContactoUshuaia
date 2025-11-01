@@ -103,7 +103,7 @@ def listarPalabrasClaves(db: Session = Depends(get_db)):
     return db.query(models.PalabrasClaves).filter(models.PalabrasClaves.deleted == False).order_by(models.PalabrasClaves.nombre).all()
 
 #Get listado de nombres únicos
-@app.get("/PalabrasClaves/nombresUnicos", response_model=list[str])
+@app.get("/PalabrasClaves/nombresUnicos/", response_model=list[str])
 def listarPalabrasClavesByNombreUnicos(db: Session = Depends(get_db)):
     nombres = (db.query(models.PalabrasClaves.nombre).filter(models.PalabrasClaves.deleted == False).group_by(models.PalabrasClaves.nombre).order_by(models.PalabrasClaves.nombre).all())
     # Convierte [("bomba",), ("caño",), ("caldera",)] → ["bomba", "caño", "caldera"]
