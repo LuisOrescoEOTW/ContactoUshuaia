@@ -28,11 +28,11 @@ export const getRubroXContratistasById = (id: number) => {
 };
 
 //Insertar Nuevo
-export const postRubrosXContratistas = (data: IrubroXContratista) => {
+export const postRubrosXContratistas = (data: IrubroXContratista, contratista:number) => {
   return async (dispatch: AppDispatch) => {
     try {
       await Api.post("/RubrosXContratistas/", data);
-      dispatch(getRubrosXContratistas()); // Para refrescar la lista después de agregar
+      dispatch(getRubroXContratistasById(contratista)); // opcional: refrescar lista
     } catch (error) {
       console.error("Error en post:", error);
     }
@@ -40,11 +40,11 @@ export const postRubrosXContratistas = (data: IrubroXContratista) => {
 };
 
 //Modificar
-export const putRubrosXContratistas = (data: IrubroXContratista) => {
+export const putRubrosXContratistas = (data: IrubroXContratista, contratista:number) => {
   return async (dispatch: AppDispatch) => {
     try {
       await Api.put(`/RubrosXContratistas/${data.id}`, data);
-      dispatch(getRubrosXContratistas()); // Para refrescar la lista después de actualizar
+      dispatch(getRubroXContratistasById(contratista)); // Para refrescar la lista después de actualizar
     } catch (error) {
       console.error("Error en put:", error);
     }
@@ -52,11 +52,11 @@ export const putRubrosXContratistas = (data: IrubroXContratista) => {
 };
 
 //Eliminar
-export const deleteRubrosXContratistas = (data: number) => {
+export const deleteRubrosXContratistas = (data: number, contratista:number) => {
   return async (dispatch: AppDispatch) => {
     try {
       await Api.delete(`/RubrosXContratistas/${data}`);
-      dispatch(getRubrosXContratistas()); // Para refrescar la lista después de actualizar
+      dispatch(getRubroXContratistasById(contratista)); // Para refrescar la lista después de actualizar
     } catch (error) {
       console.error("Error en delete:", error);
     }

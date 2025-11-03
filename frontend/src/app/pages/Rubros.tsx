@@ -1,27 +1,24 @@
-import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import type { Icontratista } from "../models/Icontratista";
 import type { AppDispatch, RootState } from "../../redux/store";
-import {
-  deleteRubros,
-  getRubros,
-} from "../../redux/slices/rubros/rubrosThunks";
+import { useEffect, useState } from "react";
+import { deleteRubros, getRubros } from "../../redux/slices/rubros/rubrosThunks";
+import { DataGrid, type GridColDef, type GridRowSelectionModel } from "@mui/x-data-grid";
 import { Fab, Paper, Tooltip } from "@mui/material";
-import {
-  DataGrid,
-  type GridColDef,
-  type GridRowSelectionModel,
-} from "@mui/x-data-grid";
-import { toast } from "react-toastify";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import type { Irubros } from "../models/Irubros";
+import { toast } from "react-toastify";
 import { RubrosForm } from "../components/RubrosForm";
 import AlertDialogEliminar from "../hooks/AlertDialogEliminar";
 
 interface Props {
-  onClose: (value: number | null) => void;
+  contratista: Icontratista | null;
+  // onClose: (value: number | null) => void;
 }
 
-export const Rubros : React.FC<Props> = ({ onClose}) => { 
+export const Rubros : React.FC<Props> = ({ contratista }) => { 
+  console.log(contratista);
+
   // Leer
   const dispatch = useDispatch<AppDispatch>();
   const { rubros = [] } = useSelector((state: RootState) => state.rubros);
@@ -91,11 +88,12 @@ export const Rubros : React.FC<Props> = ({ onClose}) => {
       newSelectionModel.ids instanceof Set
     ) {
       const id = Array.from(newSelectionModel.ids)[0];
-      if (id !== undefined) {
-        onClose(Number(id));
-      } else {
-        onClose(null);
-      }
+      console.log(id);
+      // if (id !== undefined) {
+      //   onClose(Number(id));
+      // } else {
+      //   onClose(null);
+      // }
     }
   };
 
@@ -119,7 +117,7 @@ export const Rubros : React.FC<Props> = ({ onClose}) => {
   return (
     <>
       {/* Rubros */}
-      <div>
+      <div style={{ margin: "5px" }}>
         <div
           style={{
             display: "flex",
@@ -151,7 +149,6 @@ export const Rubros : React.FC<Props> = ({ onClose}) => {
           </div>
         </div>
 
-        {/* <Paper sx={{ width: "100%", height: "100%" }}> */}
         <Paper>
           <DataGrid
             rows={rubros}

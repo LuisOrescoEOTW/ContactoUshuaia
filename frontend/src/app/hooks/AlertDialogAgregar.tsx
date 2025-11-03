@@ -5,7 +5,7 @@ interface AlertDialogProps {
   onClose: (result: boolean) => void; // Cambiado para aceptar un valor booleano
 }
 
-export default function AlertDialogEliminar({ open, onClose }: AlertDialogProps) {
+export default function AlertDialogAgregar({ open, onClose }: AlertDialogProps) {
   return (
     <Dialog
       open={open}
@@ -15,10 +15,10 @@ export default function AlertDialogEliminar({ open, onClose }: AlertDialogProps)
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">{"Eliminar"}</DialogTitle>
+      <DialogTitle id="alert-dialog-title">{"Agregar"}</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          ¿Está seguro de que desea eliminar este registro?
+          ¿Está seguro de que desea agregar este registro?
         </DialogContentText>
       </DialogContent>
       <DialogActions>

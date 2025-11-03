@@ -5,20 +5,20 @@ interface AlertDialogProps {
   onClose: (result: boolean) => void; // Cambiado para aceptar un valor booleano
 }
 
-export default function AlertDialogEliminar({ open, onClose }: AlertDialogProps) {
+export default function AlertDialogEditar({ open, onClose }: AlertDialogProps) {
   return (
     <Dialog
       open={open}
-      onClose={() => onClose(false)} // Cierra el modal y retorna "false"
+      onClose={() => onClose(false)}
       disableEnforceFocus
       disableRestoreFocus
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">{"Eliminar"}</DialogTitle>
+      <DialogTitle id="alert-dialog-title">{"Editar"}</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          ¿Está seguro de que desea eliminar este registro?
+          ¿Está seguro de que desea editar este registro?
         </DialogContentText>
       </DialogContent>
       <DialogActions>

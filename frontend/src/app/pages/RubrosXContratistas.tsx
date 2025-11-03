@@ -1,33 +1,46 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { useEffect, useState } from "react";
-import { deleteContratistas, getContratistas } from "../../redux/slices/contratistas/contratistasThunks";
-import { DataGrid, type GridColDef, type GridRowSelectionModel } from "@mui/x-data-grid";
-import { Fab, Paper, Tooltip } from "@mui/material";
-import { Add, Delete, Edit } from "@mui/icons-material";
-import type { Icontratista } from "../models/Icontratista";
+import {
+  deleteRubrosXContratistas,
+  getRubroXContratistasById,
+  putRubrosXContratistas,
+} from "../../redux/slices/rubrosXContratistas/rubrosXContratistasThunks";
+import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import { Fab, Paper, Switch, Tooltip } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
+import type { IrubroXContratista } from "../models/IrubroXContratista";
 import { toast } from "react-toastify";
 import AlertDialogEliminar from "../hooks/AlertDialogEliminar";
-import { ContratistasForm } from "../components/ContratistasForm";
+import type { Icontratista } from "../models/Icontratista";
+import { RubrosXContratistasForm } from "../components/RubrosXContratistasForm";
+import AlertDialogEditar from "../hooks/AlertDialogEditar";
 
 interface Props {
-  contratista: (value: Icontratista | null) => void;
+  contratista: Icontratista | null;
 }
-export const Contratistas : React.FC<Props> = ({ contratista }) => {
 
+export const RubrosXContratistas: React.FC<Props> = ({ contratista }) => {
   // Leer
   const dispatch = useDispatch<AppDispatch>();
-  const { contratistas = [] } = useSelector((state: RootState) => state.contratistas);
+  const { rubrosXContratistas = [] } = useSelector(
+    (state: RootState) => state.rubrosXContratistas
+  );
 
   // General
   useEffect(() => {
-    dispatch(getContratistas());
-  }, [dispatch]);
+    dispatch(getRubroXContratistasById(contratista ? contratista.id : 0));
+  }, [dispatch, contratista]);
 
-  //
+  // Acciones
   const columns: GridColDef[] = [
-    { field: "id", headerName: "Id", flex: 0.2 },
-    { field: "nombreApellido", headerName: "Nombre y Apellido", flex: 1 },
+    { field: "id", headerName: "Id",flex: 0.1 },
+    {
+      field: "rubros",
+      headerName: "Rubro",
+      flex: 0.8,
+      renderCell: (params) => <>{params.row?.rubros?.nombre ?? "Sin rubro"}</>,
+    },
     {
       field: "acciones",
       headerName: "Acciones",
@@ -44,6 +57,17 @@ export const Contratistas : React.FC<Props> = ({ contratista }) => {
             height: "100%",
           }}
         >
+          <Tooltip title="Habilitar">
+            <Switch
+              checked={params.row.habilitado}
+              onChange={handleChange}
+              slotProps={{ input: { "aria-label": "controlled" } }}
+              onClick={(e) => {
+                (e.currentTarget as HTMLButtonElement).blur();
+                setRowSelect(params.row);
+              }}
+            />
+          </Tooltip>
           <Tooltip title="Editar">
             <Fab
               size="small"
@@ -74,33 +98,52 @@ export const Contratistas : React.FC<Props> = ({ contratista }) => {
       ),
     },
   ];
-
   const paginationModels = { page: 0, pageSize: 5 };
 
-  // Paso el objeto seleccionado de newSelectionModel
-  const handleRowSelection = (newSelectionModel: GridRowSelectionModel) => {
-    if (
-      newSelectionModel &&
-      typeof newSelectionModel === "object" &&
-      "ids" in newSelectionModel
-    ) {
-      const modelo = Array.from(newSelectionModel.ids)[0];
-      const id = modelo !== undefined ? Number(modelo) : null;
-      const selectedContratista = contratistas.find((c) => c.id === id) || null;
-      contratista(selectedContratista);
+  // Estado para el switch
+  const [checked, setChecked] = useState(false); //switch chequeado o no
+  const [openDialogEditar, setOpenDialogEditar] = useState(false); //Abrir confirmación de cambiar
+  const [rowSelect, setRowSelect] = useState<IrubroXContratista>();
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
+    setOpenDialogEditar(true);
+  };
+  const handleDialogCloseEditar = (confirm: boolean) => {
+    if (confirm && rowSelect) {
+      const parsedData = {
+        ...rowSelect,
+        habilitado: checked,
+      };
+      delete parsedData.rubros;
+      delete parsedData.contratistas;
+      dispatch(
+        putRubrosXContratistas(
+          parsedData,
+          parsedData?.contratistasId ? parsedData.contratistasId : 0
+        )
+      )
+        .then(() => toast.info("Elemento modificado"))
+        .catch(() => toast.error("Error al modificar el elemento"));
     }
+    setOpenDialogEditar(false);
   };
 
-  // Agregar - Modificar
+  // Modificar
   const [modalAbrir, setModalAbrir] = useState(false);
-  const [editState, setEditState] = useState<Icontratista | null>(null);
+  const [editState, setEditState] = useState<IrubroXContratista | null>(null);
 
   //Borrar
   const [deleteId, setDeleteId] = useState<number | null>(null); // ID a eliminar
   const [openDialog, setOpenDialog] = useState(false);
   const handleDialogClose = (confirmDelete: boolean) => {
     if (confirmDelete && deleteId !== null) {
-      dispatch(deleteContratistas(deleteId))
+      dispatch(
+        deleteRubrosXContratistas(
+          deleteId,
+          contratista?.id ? contratista.id : 0
+        )
+      )
         .then(() => toast.error("Elemento eliminado"))
         .catch(() => toast.error("Error al eliminar el elemento"));
     }
@@ -110,7 +153,7 @@ export const Contratistas : React.FC<Props> = ({ contratista }) => {
 
   return (
     <>
-      {/* Contratistas */}
+      {/* Rubros X Contratistas*/}
       <div style={{ margin: "5px" }}>
         <div
           style={{
@@ -125,34 +168,20 @@ export const Contratistas : React.FC<Props> = ({ contratista }) => {
             color: "white",
           }}
         >
-          <h2>Contratistas</h2>
-          <div style={{ textAlign: "end" }}>
-            <Tooltip title="Agregar">
-              <Fab
-                color="success"
-                size="small"
-                onClick={(e) => {
-                  (e.currentTarget as HTMLButtonElement).blur();
-                  setEditState(null);
-                  setModalAbrir(true);
-                }}
-              >
-                <Add />
-              </Fab>
-            </Tooltip>
-          </div>
+          <h2>Rubros X Contratista</h2>
         </div>
 
-        <Paper >
+        {/* <Paper sx={{ width: "100%", height: "100%" }}> */}
+        <Paper>
           <DataGrid
-            rows={contratistas}
+            rows={rubrosXContratistas}
             columns={columns}
             initialState={{
               pagination: { paginationModel: paginationModels },
             }}
             pageSizeOptions={[5, 10, 50, 100]}
-            onRowSelectionModelChange={handleRowSelection}
             checkboxSelection={false}
+            disableRowSelectionOnClick
             sx={{
               width: "100%",
               height: "100%",
@@ -163,14 +192,22 @@ export const Contratistas : React.FC<Props> = ({ contratista }) => {
           />
         </Paper>
       </div>
+
       {/* Alta - Modificaciones */}
-      <ContratistasForm
+      <RubrosXContratistasForm
         open={modalAbrir}
         onClose={() => (setModalAbrir(false), setEditState(null))}
         editState={editState}
       />
+
       {/* Modal Eliminar */}
       <AlertDialogEliminar open={openDialog} onClose={handleDialogClose} />
+
+      {/* Modal Editar */}
+      <AlertDialogEditar
+        open={openDialogEditar}
+        onClose={handleDialogCloseEditar}
+      />
     </>
   );
 };
