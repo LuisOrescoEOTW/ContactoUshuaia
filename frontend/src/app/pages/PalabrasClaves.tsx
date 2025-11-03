@@ -1,40 +1,44 @@
-import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
+import { useEffect, useState } from "react";
 import {
-  deleteRubros,
-  getRubros,
-} from "../../redux/slices/rubros/rubrosThunks";
-import { Fab, Paper, Tooltip } from "@mui/material";
+  deletePalabrasClaves,
+  getPalabrasClaves,
+} from "../../redux/slices/palabrasClaves/palabrasClavesThunks";
 import {
   DataGrid,
   type GridColDef,
   type GridRowSelectionModel,
 } from "@mui/x-data-grid";
-import { toast } from "react-toastify";
+import { Fab, Paper, Tooltip } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
-import type { Irubros } from "../models/Irubros";
-import { RubrosForm } from "../components/RubrosForm";
+import type { IpalabrasClaves } from "../models/IpalabrasClaves";
+import { toast } from "react-toastify";
+import { PalabrasClavesForm } from "../components/PalabrasClavesForm";
 import AlertDialogEliminar from "../hooks/AlertDialogEliminar";
 
-interface Props {
-  onClose: (value: number | null) => void;
-}
-
-export const Rubros : React.FC<Props> = ({ onClose}) => { 
+export const PalabrasClaves = () => {
   // Leer
   const dispatch = useDispatch<AppDispatch>();
-  const { rubros = [] } = useSelector((state: RootState) => state.rubros);
+  const { palabrasClaves = [] } = useSelector(
+    (state: RootState) => state.palabrasClaves
+  );
 
   // General
   useEffect(() => {
-    dispatch(getRubros());
+    dispatch(getPalabrasClaves());
   }, [dispatch]);
 
   // Acciones
   const columns: GridColDef[] = [
     { field: "id", headerName: "Id", flex: 0.2 },
     { field: "nombre", headerName: "Nombre", flex: 1 },
+    {
+      field: "rubros",
+      headerName: "Rubro",
+      flex: 1,
+      renderCell: (params) => <>{params.row?.rubros?.nombre ?? "Sin rubro"}</>,
+    },
     {
       field: "acciones",
       headerName: "Acciones",
@@ -83,32 +87,16 @@ export const Rubros : React.FC<Props> = ({ onClose}) => {
   ];
   const paginationModels = { page: 0, pageSize: 5 };
 
-  // Extraer el id del Set en newSelectionModel.ids
-  const handleRowSelection = (newSelectionModel: GridRowSelectionModel) => {
-    if (
-      newSelectionModel &&
-      typeof newSelectionModel === "object" &&
-      newSelectionModel.ids instanceof Set
-    ) {
-      const id = Array.from(newSelectionModel.ids)[0];
-      if (id !== undefined) {
-        onClose(Number(id));
-      } else {
-        onClose(null);
-      }
-    }
-  };
-
   // Agregar - Modificar
   const [modalAbrir, setModalAbrir] = useState(false);
-  const [editState, setEditState] = useState<Irubros | null>(null);
+  const [editState, setEditState] = useState<IpalabrasClaves | null>(null);
 
   //Borrar
   const [deleteId, setDeleteId] = useState<number | null>(null); // ID a eliminar
   const [openDialog, setOpenDialog] = useState(false);
   const handleDialogClose = (confirmDelete: boolean) => {
     if (confirmDelete && deleteId !== null) {
-      dispatch(deleteRubros(deleteId))
+      dispatch(deletePalabrasClaves(deleteId))
         .then(() => toast.error("Elemento eliminado"))
         .catch(() => toast.error("Error al eliminar el elemento"));
     }
@@ -118,7 +106,7 @@ export const Rubros : React.FC<Props> = ({ onClose}) => {
 
   return (
     <>
-      {/* Rubros */}
+      {/* Palabras Claves */}
       <div>
         <div
           style={{
@@ -133,7 +121,7 @@ export const Rubros : React.FC<Props> = ({ onClose}) => {
             color: "white",
           }}
         >
-          <h2>Rubros</h2>
+          <h2>Palabras Claves</h2>
           <div style={{ textAlign: "end" }}>
             <Tooltip title="Agregar">
               <Fab
@@ -152,29 +140,31 @@ export const Rubros : React.FC<Props> = ({ onClose}) => {
         </div>
 
         {/* <Paper sx={{ width: "100%", height: "100%" }}> */}
-        <Paper>
-          <DataGrid
-            rows={rubros}
-            columns={columns}
-            initialState={{
-              pagination: { paginationModel: paginationModels },
-            }}
-            pageSizeOptions={[5, 10, 50, 100]}
-            onRowSelectionModelChange={handleRowSelection}
-            checkboxSelection={false}
-            sx={{
-              width: "100%",
-              height: "100%",
-              border: 2,
-              borderColor: "#D9D9D9",
-              "& .MuiDataGrid-virtualScroller": { overflow: "auto" },
-            }}
-          />
-        </Paper>
+        {palabrasClaves && (
+          <Paper>
+            <DataGrid
+              rows={palabrasClaves}
+              columns={columns}
+              initialState={{
+                pagination: { paginationModel: paginationModels },
+              }}
+              pageSizeOptions={[5, 10, 50, 100]}
+              checkboxSelection={false}
+              rowSelection={false}
+              sx={{
+                width: "100%",
+                height: "100%",
+                border: 2,
+                borderColor: "#D9D9D9",
+                "& .MuiDataGrid-virtualScroller": { overflow: "auto" },
+              }}
+            />
+          </Paper>
+        )}
       </div>
 
       {/* Alta - Modificaciones */}
-      <RubrosForm
+      <PalabrasClavesForm
         open={modalAbrir}
         onClose={() => (setModalAbrir(false), setEditState(null))}
         editState={editState}

@@ -1,40 +1,33 @@
-import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
-import {
-  deleteRubros,
-  getRubros,
-} from "../../redux/slices/rubros/rubrosThunks";
+import { useEffect, useState } from "react";
+import { deleteContratistas, getContratistas } from "../../redux/slices/contratistas/contratistasThunks";
+import { DataGrid, type GridColDef, type GridRowSelectionModel } from "@mui/x-data-grid";
 import { Fab, Paper, Tooltip } from "@mui/material";
-import {
-  DataGrid,
-  type GridColDef,
-  type GridRowSelectionModel,
-} from "@mui/x-data-grid";
-import { toast } from "react-toastify";
 import { Add, Delete, Edit } from "@mui/icons-material";
-import type { Irubros } from "../models/Irubros";
-import { RubrosForm } from "../components/RubrosForm";
+import type { Icontratista } from "../models/Icontratista";
+import { toast } from "react-toastify";
 import AlertDialogEliminar from "../hooks/AlertDialogEliminar";
+import { ContratistasForm } from "../components/ContratistasForm";
 
 interface Props {
   onClose: (value: number | null) => void;
 }
+export const Contratistas : React.FC<Props> = ({ onClose}) => {
 
-export const Rubros : React.FC<Props> = ({ onClose}) => { 
   // Leer
   const dispatch = useDispatch<AppDispatch>();
-  const { rubros = [] } = useSelector((state: RootState) => state.rubros);
+  const { contratistas = [] } = useSelector((state: RootState) => state.contratistas);
 
   // General
   useEffect(() => {
-    dispatch(getRubros());
+    dispatch(getContratistas());
   }, [dispatch]);
 
-  // Acciones
+  //
   const columns: GridColDef[] = [
     { field: "id", headerName: "Id", flex: 0.2 },
-    { field: "nombre", headerName: "Nombre", flex: 1 },
+    { field: "nombreApellido", headerName: "Nombre y Apellido", flex: 1 },
     {
       field: "acciones",
       headerName: "Acciones",
@@ -81,6 +74,7 @@ export const Rubros : React.FC<Props> = ({ onClose}) => {
       ),
     },
   ];
+
   const paginationModels = { page: 0, pageSize: 5 };
 
   // Extraer el id del Set en newSelectionModel.ids
@@ -101,14 +95,14 @@ export const Rubros : React.FC<Props> = ({ onClose}) => {
 
   // Agregar - Modificar
   const [modalAbrir, setModalAbrir] = useState(false);
-  const [editState, setEditState] = useState<Irubros | null>(null);
+  const [editState, setEditState] = useState<Icontratista | null>(null);
 
   //Borrar
   const [deleteId, setDeleteId] = useState<number | null>(null); // ID a eliminar
   const [openDialog, setOpenDialog] = useState(false);
   const handleDialogClose = (confirmDelete: boolean) => {
     if (confirmDelete && deleteId !== null) {
-      dispatch(deleteRubros(deleteId))
+      dispatch(deleteContratistas(deleteId))
         .then(() => toast.error("Elemento eliminado"))
         .catch(() => toast.error("Error al eliminar el elemento"));
     }
@@ -118,7 +112,7 @@ export const Rubros : React.FC<Props> = ({ onClose}) => {
 
   return (
     <>
-      {/* Rubros */}
+      {/* Contratistas */}
       <div>
         <div
           style={{
@@ -133,14 +127,14 @@ export const Rubros : React.FC<Props> = ({ onClose}) => {
             color: "white",
           }}
         >
-          <h2>Rubros</h2>
+          <h2>Contratistas</h2>
           <div style={{ textAlign: "end" }}>
             <Tooltip title="Agregar">
               <Fab
                 color="success"
                 size="small"
                 onClick={(e) => {
-                  (e.currentTarget as HTMLButtonElement).blur(); // 👈 quita el foco
+                  (e.currentTarget as HTMLButtonElement).blur();
                   setEditState(null);
                   setModalAbrir(true);
                 }}
@@ -151,10 +145,9 @@ export const Rubros : React.FC<Props> = ({ onClose}) => {
           </div>
         </div>
 
-        {/* <Paper sx={{ width: "100%", height: "100%" }}> */}
-        <Paper>
+        <Paper >
           <DataGrid
-            rows={rubros}
+            rows={contratistas}
             columns={columns}
             initialState={{
               pagination: { paginationModel: paginationModels },
@@ -172,14 +165,12 @@ export const Rubros : React.FC<Props> = ({ onClose}) => {
           />
         </Paper>
       </div>
-
       {/* Alta - Modificaciones */}
-      <RubrosForm
+      <ContratistasForm
         open={modalAbrir}
         onClose={() => (setModalAbrir(false), setEditState(null))}
         editState={editState}
       />
-
       {/* Modal Eliminar */}
       <AlertDialogEliminar open={openDialog} onClose={handleDialogClose} />
     </>
