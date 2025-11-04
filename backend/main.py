@@ -85,6 +85,10 @@ def listarRubrosXContratistas(db: Session = Depends(get_db)):
 def listarRubrosXContratistasByContratista(contratista_id: int, db: Session = Depends(get_db)):
     return db.query(models.RubrosXContratistas).filter(models.RubrosXContratistas.deleted == False, models.RubrosXContratistas.contratistasId == contratista_id).order_by(models.RubrosXContratistas.rubrosId).all()
 
+@app.get("/RubrosXContratistas/getByRubroId/{rubro_id}", response_model=list[schemas.RubrosXContratistas])
+def listarRubrosXContratistasByRubro(rubro_id: int, db: Session = Depends(get_db)):
+    return db.query(models.RubrosXContratistas).filter(models.RubrosXContratistas.deleted == False, models.RubrosXContratistas.rubrosId == rubro_id).order_by(models.RubrosXContratistas.rubrosId).all()
+
 @app.post("/RubrosXContratistas/")
 def crearRubrosXContratistas(registro: schemas.RubrosXContratistas, db: Session = Depends(get_db)):
     return rubroxcontratista_crud.create(db, registro)

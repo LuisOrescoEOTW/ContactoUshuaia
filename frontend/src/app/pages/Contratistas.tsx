@@ -163,6 +163,7 @@ export const Contratistas : React.FC<Props> = ({ contratista }) => {
           />
         </Paper>
       </div>
+      
       {/* Alta - Modificaciones */}
       <ContratistasForm
         open={modalAbrir}

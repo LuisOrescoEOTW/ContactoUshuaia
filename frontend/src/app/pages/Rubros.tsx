@@ -2,26 +2,39 @@ import { useDispatch, useSelector } from "react-redux";
 import type { Icontratista } from "../models/Icontratista";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { useEffect, useState } from "react";
-import { deleteRubros, getRubros } from "../../redux/slices/rubros/rubrosThunks";
-import { DataGrid, type GridColDef, type GridRowSelectionModel } from "@mui/x-data-grid";
+import {
+  deleteRubros,
+  getRubros,
+} from "../../redux/slices/rubros/rubrosThunks";
+import {
+  DataGrid,
+  type GridColDef,
+  type GridRowSelectionModel,
+} from "@mui/x-data-grid";
 import { Fab, Paper, Tooltip } from "@mui/material";
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Add, ArrowBack, Delete, Edit } from "@mui/icons-material";
 import type { Irubros } from "../models/Irubros";
-import { toast } from "react-toastify";
 import { RubrosForm } from "../components/RubrosForm";
 import AlertDialogEliminar from "../hooks/AlertDialogEliminar";
+import {
+  getRubroXContratistasByRubroId,
+  postRubrosXContratistas,
+} from "../../redux/slices/rubrosXContratistas/rubrosXContratistasThunks";
+import { toast } from "react-toastify";
+import AlertDialogAgregar from "../hooks/AlertDialogAgregar";
 
 interface Props {
   contratista: Icontratista | null;
   // onClose: (value: number | null) => void;
 }
 
-export const Rubros : React.FC<Props> = ({ contratista }) => { 
-  console.log(contratista);
-
+export const Rubros: React.FC<Props> = ({ contratista }) => {
   // Leer
   const dispatch = useDispatch<AppDispatch>();
   const { rubros = [] } = useSelector((state: RootState) => state.rubros);
+  const { rubrosXContratistas = [] } = useSelector(
+    (state: RootState) => state.rubrosXContratistas
+  );
 
   // General
   useEffect(() => {
@@ -48,6 +61,19 @@ export const Rubros : React.FC<Props> = ({ contratista }) => {
             height: "100%",
           }}
         >
+          <Tooltip title="Asignar">
+            <Fab
+              size="small"
+              color="warning"
+              onClick={(e) => {
+                (e.currentTarget as HTMLButtonElement).blur();
+                setEditState(params.row);
+                asignar(params.row.id);
+              }}
+            >
+              <ArrowBack fontSize="small" />
+            </Fab>
+          </Tooltip>
           <Tooltip title="Editar">
             <Fab
               size="small"
@@ -68,7 +94,7 @@ export const Rubros : React.FC<Props> = ({ contratista }) => {
               onClick={(e) => {
                 (e.currentTarget as HTMLButtonElement).blur();
                 setDeleteId(params.row.id);
-                setOpenDialog(true);
+                verificarUso(params.row.id);
               }}
             >
               <Delete fontSize="small" />
@@ -80,21 +106,42 @@ export const Rubros : React.FC<Props> = ({ contratista }) => {
   ];
   const paginationModels = { page: 0, pageSize: 5 };
 
-  // Extraer el id del Set en newSelectionModel.ids
-  const handleRowSelection = (newSelectionModel: GridRowSelectionModel) => {
-    if (
-      newSelectionModel &&
-      typeof newSelectionModel === "object" &&
-      newSelectionModel.ids instanceof Set
-    ) {
-      const id = Array.from(newSelectionModel.ids)[0];
-      console.log(id);
-      // if (id !== undefined) {
-      //   onClose(Number(id));
-      // } else {
-      //   onClose(null);
-      // }
+  // Asignar
+  const asignar = (rubroId: number) => {
+    if (contratista) {
+      const yaAsignado = rubrosXContratistas.some(
+        (rxC) =>
+          rxC.contratistasId === contratista.id && rxC.rubrosId === rubroId
+      );
+      if (yaAsignado) {
+        toast.error("El rubro ya está asignado a este contratista.");
+      } else {
+        setOpenDialogAsignar(true);
+      }
+    } else {
+      toast.error("No hay contratista seleccionado para asignar el rubro.");
     }
+  };
+  const [openDialogAsignar, setOpenDialogAsignar] = useState(false);
+
+  const handleDialogCloseAsignar = async (confirmarAsignar: boolean) => {
+    if (contratista && confirmarAsignar && editState) {
+      const nuevoRubroXContratista = {
+        rubrosId: editState.id,
+        contratistasId: contratista.id,
+        cantidadPuntuados: 0,
+        sumatoriaPuntuados: 0,
+        habilitado: true,
+      };
+      dispatch(postRubrosXContratistas(nuevoRubroXContratista, contratista.id))
+        .then(() => {
+          toast.success("Rubro asignado al contratista exitosamente.");
+        })
+        .catch(() => {
+          toast.error("Error al asignar el rubro al contratista.");
+        });
+    }
+    setOpenDialogAsignar(false);
   };
 
   // Agregar - Modificar
@@ -104,9 +151,27 @@ export const Rubros : React.FC<Props> = ({ contratista }) => {
   //Borrar
   const [deleteId, setDeleteId] = useState<number | null>(null); // ID a eliminar
   const [openDialog, setOpenDialog] = useState(false);
-  const handleDialogClose = (confirmDelete: boolean) => {
+  const { rubrosXContratistasByRubroId = [] } = useSelector(
+    (state: RootState) => state.rubrosXContratistas
+  );
+
+  const verificarUso = async (id: number) => {
+    await dispatch(getRubroXContratistasByRubroId(id));
+  };
+  useEffect(() => {
+    if (deleteId === null) return;
+    if (rubrosXContratistasByRubroId.length > 0) {
+      toast.error(
+        "No se puede eliminar el rubro porque está asignado a contratistas."
+      );
+    } else {
+      setOpenDialog(true);
+    }
+  }, [rubrosXContratistasByRubroId]);
+
+  const handleDialogClose = async (confirmDelete: boolean) => {
     if (confirmDelete && deleteId !== null) {
-      dispatch(deleteRubros(deleteId))
+      dispatch(deleteRubros(deleteId, contratista?.id ? contratista.id : 0))
         .then(() => toast.error("Elemento eliminado"))
         .catch(() => toast.error("Error al eliminar el elemento"));
     }
@@ -157,8 +222,9 @@ export const Rubros : React.FC<Props> = ({ contratista }) => {
               pagination: { paginationModel: paginationModels },
             }}
             pageSizeOptions={[5, 10, 50, 100]}
-            onRowSelectionModelChange={handleRowSelection}
+            // onRowSelectionModelChange={handleRowSelection}
             checkboxSelection={false}
+            disableRowSelectionOnClick
             sx={{
               width: "100%",
               height: "100%",
@@ -175,10 +241,16 @@ export const Rubros : React.FC<Props> = ({ contratista }) => {
         open={modalAbrir}
         onClose={() => (setModalAbrir(false), setEditState(null))}
         editState={editState}
+        contratista={contratista}
       />
-
       {/* Modal Eliminar */}
       <AlertDialogEliminar open={openDialog} onClose={handleDialogClose} />
+
+      {/* Modal Agregar */}
+      <AlertDialogAgregar
+        open={openDialogAsignar}
+        onClose={handleDialogCloseAsignar}
+      />
     </>
   );
 };

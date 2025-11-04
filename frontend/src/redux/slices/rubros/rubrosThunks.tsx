@@ -1,6 +1,7 @@
 import { Api } from "../../../api/api";
 import type { Irubros } from "../../../app/models/Irubros";
 import type { AppDispatch } from "../../store";
+import { getRubroXContratistasById } from "../rubrosXContratistas/rubrosXContratistasThunks";
 import { setRubros } from "./rubrosSlice";
 
 //Get All
@@ -40,11 +41,12 @@ export const postRubros = (data: Irubros) => {
 };
 
 //Modificar
-export const putRubros = (data: Irubros) => {
+export const putRubros = (data: Irubros, contratista:number) => {
   return async (dispatch: AppDispatch) => {
     try {
       await Api.put(`/Rubros/${data.id}`, data);
       dispatch(getRubros()); // Para refrescar la lista después de actualizar
+      dispatch(getRubroXContratistasById(contratista)); // Refresco RxC
     } catch (error) {
       console.error("Error en put:", error);
     }
@@ -52,11 +54,12 @@ export const putRubros = (data: Irubros) => {
 };
 
 //Eliminar
-export const deleteRubros = (data: number) => {
+export const deleteRubros = (data: number, contratista:number) => {
   return async (dispatch: AppDispatch) => {
     try {
       await Api.delete(`/Rubros/${data}`);
       dispatch(getRubros()); // Para refrescar la lista después de actualizar
+      dispatch(getRubroXContratistasById(contratista)); // Refresco RxC
     } catch (error) {
       console.error("Error en delete:", error);
     }

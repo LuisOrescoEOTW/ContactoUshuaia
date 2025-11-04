@@ -13,14 +13,16 @@ import {
   TextField,
 } from "@mui/material";
 import { toast } from "react-toastify";
+import type { Icontratista } from "../models/Icontratista";
 
 interface Props {
   open: boolean;
   onClose: () => void;
   editState: Irubros | null;
+  contratista: Icontratista | null;
 }
 
-export const RubrosForm: React.FC<Props> = ({ open, onClose, editState }) => {
+export const RubrosForm: React.FC<Props> = ({ open, onClose, editState, contratista }) => {
   //Leer
   const dispatch = useDispatch<AppDispatch>();
 
@@ -50,7 +52,7 @@ export const RubrosForm: React.FC<Props> = ({ open, onClose, editState }) => {
   // Guardar (Agregar/Editar)
   const onSubmit = (data: Irubros) => {
     if (editState) {
-      dispatch(putRubros(data))
+      dispatch(putRubros(data, contratista?.id ? contratista.id : 0))
         .then(() => toast.info("Elemento modificado"))
         .catch(() => toast.error("Error al modificar el elemento"));
     } else {

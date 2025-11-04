@@ -1,7 +1,7 @@
 import { Api } from "../../../api/api";
 import type { IrubroXContratista } from "../../../app/models/IrubroXContratista";
 import type { AppDispatch } from "../../store";
-import { setRubrosXContratistas } from "./rubrosXContratistasSlice";
+import { setRubrosXContratistas, setRubrosXContratistasByRubroId } from "./rubrosXContratistasSlice";
 
 //Get All
 export const getRubrosXContratistas = () => {
@@ -15,7 +15,7 @@ export const getRubrosXContratistas = () => {
   };
 };
 
-//Get by Id
+//Get by ContratistaId
 export const getRubroXContratistasById = (id: number) => {
   return async (dispatch: AppDispatch) => {
     try {
@@ -23,6 +23,18 @@ export const getRubroXContratistasById = (id: number) => {
       dispatch(setRubrosXContratistas({ rubrosXContratistas: data }));
     } catch (error) {
       console.error("Error en getById:", error);
+    }
+  };
+};
+
+//Get by RubroId
+export const getRubroXContratistasByRubroId = (id: number) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      const { data } = await Api.get(`/RubrosXContratistas/getByRubroId/${id}`);
+      dispatch(setRubrosXContratistasByRubroId({ rubrosXContratistasByRubroId: data }));
+    } catch (error) {
+      console.error("Error en getByRubroId:", error);
     }
   };
 };
