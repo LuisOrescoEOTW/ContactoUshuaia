@@ -1,6 +1,6 @@
 import { Contratistas } from "./Contratistas";
 import { PalabrasClaves } from "./PalabrasClaves";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { RubrosXContratistas } from "./RubrosXContratistas";
 import type { Icontratista } from "../models/Icontratista";
 import { Rubros } from "./Rubros";
