@@ -1,7 +1,7 @@
 import { Api } from "../../../api/api";
 import type { IpalabrasClaves } from "../../../app/models/IpalabrasClaves";
 import type { AppDispatch } from "../../store";
-import { setPalabrasClaves } from "./palabrasClavesSlice";
+import { setPalabrasClaves, setPalabrasClavesNombresUnicos } from "./palabrasClavesSlice";
 
 //Get All
 export const getPalabrasClaves = () => {
@@ -15,12 +15,13 @@ export const getPalabrasClaves = () => {
   };
 };
 
+
 // Get listado de nombres únicos
 export const getPalabrasClavesNombresUnicos = () => {
   return async (dispatch: AppDispatch) => {
     try {
       const { data } = await Api.get(`/PalabrasClaves/nombresUnicos/`);
-      dispatch(setPalabrasClaves({ palabrasClaves: data }));
+      dispatch(setPalabrasClavesNombresUnicos({ palabrasClavesNombresUnicos: data }));
     } catch (error) {
       console.error("Error en getPalabrasClavesNombresUnicos:", error);
     }
