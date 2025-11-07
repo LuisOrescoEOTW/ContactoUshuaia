@@ -6,11 +6,12 @@ import { ToastContainer } from "react-toastify";
 import { Principal } from "./app/pages/Principal.tsx";
 import "./main.css";
 import "react-toastify/dist/ReactToastify.css";
+import { Prueba } from "./app/pages/Prueba.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
-      {/* <Admin /> */}
+      {/* <Prueba /> */}
       <Principal />
       <ToastContainer
         position="top-right"

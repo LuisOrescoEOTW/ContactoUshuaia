@@ -7,25 +7,16 @@ import {
   getPalabrasClavesNombresUnicos,
 } from "../../redux/slices/palabrasClaves/palabrasClavesThunks";
 import imagen from "../images/logo.png";
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, Box, Container, TextField } from "@mui/material";
 import type { IpalabrasClaves } from "../models/IpalabrasClaves";
 import { getRubros } from "../../redux/slices/rubros/rubrosThunks";
 
 export const Principal = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { rubrosXContratistas = [] } = useSelector(
-    (state: RootState) => state.rubrosXContratistas
-  );
-  const { palabrasClavesNombresUnicos = [] } = useSelector(
-    (state: RootState) => state.palabrasClaves
-  );
-  const { palabrasClaves = [] } = useSelector(
-    (state: RootState) => state.palabrasClaves
-  );
-  
-  const { rubros = [] } = useSelector(
-    (state: RootState) => state.rubros
-  );
+  const { rubrosXContratistas = [] } = useSelector((state: RootState) => state.rubrosXContratistas);
+  const { palabrasClavesNombresUnicos = [] } = useSelector((state: RootState) => state.palabrasClaves);
+  const { palabrasClaves = [] } = useSelector((state: RootState) => state.palabrasClaves);
+  const { rubros = [] } = useSelector((state: RootState) => state.rubros);
 
   const [searchValue, setSearchValue] = useState<string>("");
 
@@ -42,6 +33,8 @@ export const Principal = () => {
     null
   );
   const handleBuscar = () => {
+    console.log(rubrosXContratistas);
+    
     console.log("Texto buscado:", searchValue);
     // acá podés despachar una acción o filtrar resultados
     // dispatch(filtrarPorPalabra(searchValue));
@@ -195,8 +188,8 @@ export const Principal = () => {
         </div>
       </div>
 
-      {/* Mostrar el ícono encontrado */}
-      {pcEncontrado && (
+      {/* Iconos de Rubros */}
+      {pcEncontrado ? (
         <div
           style={{
             display: "flex",
@@ -255,64 +248,70 @@ export const Principal = () => {
             ))}
           </div>
         </div>
-      )}
-      <div>
-        {rubros && (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center", // 🔹 Centra todo el contenido horizontalmente
-            justifyContent: "center",
-            gap: "20px",
-            fontSize: "18px",
-            padding: "20px",
-            textAlign: "center",
-            borderBlock: "1px solid #ccc",
-          }}
-        >
-          {/* Contenedor de íconos (alineados en fila) */}
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap", // 🔹 Permite que los iconos salten de línea si no entran
-              justifyContent: "center", // 🔹 Centra toda la fila de iconos
-              gap: "30px", // 🔹 Espaciado entre cada ícono
-            }}
-          >
-            {rubros.map((pc) => (
+      ) : (
+        <div>
+          {rubros && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center", // 🔹 Centra todo el contenido horizontalmente
+                justifyContent: "center",
+                gap: "20px",
+                fontSize: "18px",
+                padding: "20px",
+                textAlign: "center",
+                borderBlock: "1px solid #ccc",
+              }}
+            >
+              {/* Contenedor de íconos (alineados en fila) */}
               <div
-                key={pc.id}
                 style={{
                   display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center", // 🔹 Centra imagen y texto
+                  flexWrap: "wrap", // 🔹 Permite que los iconos salten de línea si no entran
+                  justifyContent: "center", // 🔹 Centra toda la fila de iconos
+                  gap: "30px", // 🔹 Espaciado entre cada ícono
                 }}
               >
-                <img
-                  src={`../src/app/images/iconos/${pc.icono}`}
-                  alt={pc.nombre}
-                  style={{
-                    height: "60px",
-                    width: "60px",
-                    objectFit: "contain",
-                  }}
-                />
-                <div
-                  style={{
-                    color: "black",
-                    marginTop: "8px",
-                    fontSize: "16px",
-                    fontWeight: "500",
-                  }}
-                >
-                  {pc.nombre}
-                </div>
+                {rubros.map((pc) => (
+                  <div
+                    key={pc.id}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center", // 🔹 Centra imagen y texto
+                    }}
+                  >
+                    <img
+                      src={`../src/app/images/iconos/${pc.icono}`}
+                      alt={pc.nombre}
+                      style={{
+                        height: "60px",
+                        width: "60px",
+                        objectFit: "contain",
+                      }}
+                    />
+                    <div
+                      style={{
+                        color: "black",
+                        marginTop: "8px",
+                        fontSize: "16px",
+                        fontWeight: "500",
+                      }}
+                    >
+                      {pc.nombre}
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
       )}
+
+      {/* Mostrar Contratistas por Rubro */}
+      <div>
+        
       </div>
     </>
   );
