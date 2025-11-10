@@ -15,6 +15,18 @@ export const getRubrosXContratistas = () => {
   };
 };
 
+//Get All Habilitados
+export const getRubrosXContratistasHabilitados = () => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      const { data } = await Api.get(`/RubrosXContratistasHabilitados/`);
+      dispatch(setRubrosXContratistas({ rubrosXContratistas: data }));
+    } catch (error) {
+      console.error("Error en getAllHabilitados:", error);
+    }
+  };
+};
+
 //Get by ContratistaId
 export const getRubroXContratistasById = (id: number) => {
   return async (dispatch: AppDispatch) => {
@@ -62,6 +74,20 @@ export const putRubrosXContratistas = (data: IrubroXContratista, contratista:num
     }
   };
 };
+
+//Modificar y Actualizar Lista Completa
+export const putRubrosXContratistasRefresh = (data: IrubroXContratista) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      await Api.put(`/RubrosXContratistas/${data.id}`, data);
+      dispatch(getRubrosXContratistasHabilitados()); // Para refrescar la lista después de actualizar
+    } catch (error) {
+      console.error("Error en put:", error);
+    }
+  };
+};
+
+
 
 //Eliminar
 export const deleteRubrosXContratistas = (data: number, contratista:number) => {

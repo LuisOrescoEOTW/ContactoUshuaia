@@ -7,8 +7,8 @@ export interface IrubroXContratista {
   rubros?: Irubros | null;
   contratistasId?: number | 0;
   contratistas?: Icontratista | null;
-  cantidadPuntuados?: number | 0; 
-  sumatoriaPuntuados?: number | 0; 
+  cantidadPuntuados: number;
+  sumatoriaPuntuados: number; 
   habilitado?: boolean | true; 
   deleted?: boolean | false
 }

@@ -1,21 +1,43 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
-import { getRubrosXContratistas } from "../../redux/slices/rubrosXContratistas/rubrosXContratistasThunks";
+import {
+  getRubrosXContratistas,
+  getRubrosXContratistasHabilitados,
+} from "../../redux/slices/rubrosXContratistas/rubrosXContratistasThunks";
 import {
   getPalabrasClaves,
   getPalabrasClavesNombresUnicos,
 } from "../../redux/slices/palabrasClaves/palabrasClavesThunks";
 import imagen from "../images/logo.png";
-import { Autocomplete, Box, Container, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Card,
+  CardContent,
+  Rating,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import type { IpalabrasClaves } from "../models/IpalabrasClaves";
 import { getRubros } from "../../redux/slices/rubros/rubrosThunks";
+import { Person } from "@mui/icons-material";
+import { Puntuar } from "../components/Puntuar";
+import type { IrubroXContratista } from "../models/IrubroXContratista";
+import { set } from "react-hook-form";
 
 export const Principal = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { rubrosXContratistas = [] } = useSelector((state: RootState) => state.rubrosXContratistas);
-  const { palabrasClavesNombresUnicos = [] } = useSelector((state: RootState) => state.palabrasClaves);
-  const { palabrasClaves = [] } = useSelector((state: RootState) => state.palabrasClaves);
+  const { rubrosXContratistas = [] } = useSelector(
+    (state: RootState) => state.rubrosXContratistas
+  );
+  const { palabrasClavesNombresUnicos = [] } = useSelector(
+    (state: RootState) => state.palabrasClaves
+  );
+  const { palabrasClaves = [] } = useSelector(
+    (state: RootState) => state.palabrasClaves
+  );
   const { rubros = [] } = useSelector((state: RootState) => state.rubros);
 
   const [searchValue, setSearchValue] = useState<string>("");
@@ -23,7 +45,8 @@ export const Principal = () => {
   // Cargar datos iniciales
   useEffect(() => {
     dispatch(getRubros());
-    dispatch(getRubrosXContratistas());
+    dispatch(getRubrosXContratistasHabilitados());
+    //dispatch(getRubrosXContratistas());
     dispatch(getPalabrasClaves());
     dispatch(getPalabrasClavesNombresUnicos());
   }, [dispatch]);
@@ -33,18 +56,53 @@ export const Principal = () => {
     null
   );
   const handleBuscar = () => {
-    console.log(rubrosXContratistas);
-    
-    console.log("Texto buscado:", searchValue);
-    // acá podés despachar una acción o filtrar resultados
-    // dispatch(filtrarPorPalabra(searchValue));
-
     // Ejemplo: filtrar rubrosXContratistas por palabra clave
     const resultados = palabrasClaves.filter(
       (item) => item.nombre.toLowerCase() == searchValue.toLowerCase()
     );
-    console.log("Resultados encontrados:", resultados);
     setPcEncontrado(resultados.length > 0 ? resultados : null);
+  };
+
+  // Para mostrar todos los contratistas agrupados por rubro
+  const rubrosConContratistas = useMemo(() => {
+    // Si no hay datos aún, devolvemos un array vacío
+    if (!rubros || !rubrosXContratistas) return [];
+
+    return rubros.map((rubro) => {
+      // Filtra los contratistas que pertenecen a este rubro
+      const contratistasDeRubro = rubrosXContratistas.filter(
+        (item) => item.rubrosId === rubro.id
+      );
+
+      //Ordenrar por Nombre Ascendente
+      contratistasDeRubro.sort((a, b) => {
+        if (
+          (a.contratistas?.nombreApellido ?? "") <
+          (b.contratistas?.nombreApellido ?? "")
+        )
+          return -1;
+        if (
+          (a.contratistas?.nombreApellido ?? "") >
+          (b.contratistas?.nombreApellido ?? "")
+        )
+          return 1;
+        return 0;
+      });
+
+      return {
+        ...rubro,
+        contratistas: contratistasDeRubro,
+      };
+    });
+  }, [rubros, rubrosXContratistas]);
+
+  //Abrir ventana para puntuar
+  const [modal, setModal] = useState(false);
+  const [editState, setEditState] = useState<IrubroXContratista | null>(null)
+  const handlePuntuar = (item: any) => {
+    console.log(item);
+    setEditState(item);
+    setModal(true);
   };
 
   return (
@@ -61,16 +119,17 @@ export const Principal = () => {
           fontWeight: "bold",
         }}
       >
-        <div
-          style={{
+        <Box
+          sx={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
+            gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+            textAlign: { xs: "center", sm: "left" },
             padding: "20px",
           }}
         >
           <div>Acerca del Sitio</div>
           <div style={{ textAlign: "end" }}>Preguntas Frecuentes</div>
-        </div>
+        </Box>
 
         <div
           style={{
@@ -101,16 +160,15 @@ export const Principal = () => {
           padding: "10px",
         }}
       >
-        <div
-          style={{
+        <Box
+          sx={{
             display: "grid",
-            gridTemplateColumns: "1fr auto",
-            alignItems: "center",
-            gap: "10px",
-            borderRadius: "8px",
-            padding: "15px",
-            width: "60%",
-            maxWidth: "600px",
+            gridTemplateColumns: { xs: "1fr", sm: "1fr auto" },
+            gap: 2,
+            borderRadius: 2,
+            p: 2,
+            width: { xs: "90%", sm: "70%", md: "60%" },
+            maxWidth: 600,
             backgroundColor: "#008F9E",
           }}
         >
@@ -185,7 +243,7 @@ export const Principal = () => {
               }}
             />
           </div>
-        </div>
+        </Box>
       </div>
 
       {/* Iconos de Rubros */}
@@ -261,7 +319,7 @@ export const Principal = () => {
                 fontSize: "18px",
                 padding: "20px",
                 textAlign: "center",
-                borderBlock: "1px solid #ccc",
+                // borderBlock: "1px solid #ccc",
               }}
             >
               {/* Contenedor de íconos (alineados en fila) */}
@@ -311,8 +369,165 @@ export const Principal = () => {
 
       {/* Mostrar Contratistas por Rubro */}
       <div>
-        
+        <Box sx={{ p: 2 }}>
+          {rubrosConContratistas.map((rubro) => (
+            <Stack
+              key={rubro.id}
+              // direction="row"
+              direction={{ xs: "column", md: "row" }}
+              // alignItems="flex-start"
+              spacing={2}
+              sx={{
+                mb: 2,
+                p: 2,
+                borderRadius: 2,
+                boxShadow: 3,
+                backgroundColor: "#f9f9f9",
+              }}
+            >
+              {/* 🧩 Columna izquierda: imagen, título y recuadro */}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column", // apila verticalmente
+                  alignItems: "center",
+                  minWidth: { xs: "100%", md: 220 },
+                  mb: { xs: 2, md: 0 },
+                  // minWidth: 220,
+                  // flexShrink: 0,
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "left", gap: 2 }}>
+                  <img
+                    src={`../src/app/images/iconos/${rubro?.icono}`}
+                    alt={rubro?.nombre}
+                    style={{
+                      height: "80px",
+                      width: "80px",
+                      objectFit: "contain",
+                    }}
+                  />
+                  <Typography
+                    fontWeight="bold"
+                    color="primary"
+                    variant="h6"
+                    sx={{ textAlign: "left" }}
+                  >
+                    {rubro.nombre}
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{
+                    width: { xs: "80%", md: 150 },
+                    height: { xs: 80, md: 100 },
+                    mt: 2,
+                    borderRadius: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#e0e0e0",
+                    fontSize: "1.2rem",
+                    fontWeight: "bold",
+                    boxShadow: 2,
+                  }}
+                >
+                  Publicidad
+                </Box>
+              </Box>
+
+              {/* 📋 Columna derecha: ListView de contratistas */}
+              <Box
+                sx={{
+                  flex: 1,
+                  maxHeight: 600,
+                  overflowY: "auto",
+                  "&::-webkit-scrollbar": { width: "6px" },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#ccc",
+                    borderRadius: "8px",
+                  },
+                }}
+              >
+                {rubro.contratistas.length > 0 ? (
+                  rubro.contratistas.slice(0, 5).map((item) => (
+                    <Card
+                      key={item.id}
+                      sx={{ mb: 2, borderRadius: 3, pl: 2, pr: 2 }}
+                    >
+                      <Stack direction="row" alignItems="center" spacing={2}>
+                        <Person sx={{ fontSize: 40, color: "primary.main" }} />
+                        <CardContent sx={{ flex: 1 }}>
+                          <Typography variant="h6" fontWeight="bold">
+                            <span style={{ marginRight: "10px" }}>
+                              {item.contratistas?.nombreApellido}
+                            </span>
+                            <Rating
+                              defaultValue={
+                                item.cantidadPuntuados > 2
+                                  ? (item.sumatoriaPuntuados == 0
+                                      ? 0
+                                      : item.sumatoriaPuntuados /
+                                        item.cantidadPuntuados) / 2
+                                  : 0
+                              }
+                              precision={0.5}
+                              readOnly
+                            />
+                          </Typography>
+
+                          <Typography variant="body2">
+                            <span style={{ color: "black" }}>Teléfono: </span>
+                            <span style={{ color: "gray" }}>
+                              {item.contratistas?.telefono || "-"}
+                            </span>
+                          </Typography>
+
+                          <Typography variant="body2" color="text.secondary">
+                            <span style={{ color: "black" }}>Correo: </span>
+                            <span style={{ color: "gray" }}>
+                              {item.contratistas?.email || "-"}
+                            </span>
+                          </Typography>
+
+                          <Typography variant="body2" color="text.secondary">
+                            <span style={{ color: "black" }}>Matrícula: </span>
+                            <span style={{ color: "gray" }}>
+                              {item.contratistas?.matricula || "-"}
+                            </span>
+                          </Typography>
+                        </CardContent>
+
+                        <div
+                          onClick={() => handlePuntuar(item)}
+                          style={{
+                            transform: "rotate(270deg)",
+                            cursor: "pointer",
+                            color: "#008F9E",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Puntuar
+                        </div>
+                      </Stack>
+                    </Card>
+                  ))
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No hay contratistas disponibles para este rubro.
+                  </Typography>
+                )}
+              </Box>
+            </Stack>
+          ))}
+        </Box>
       </div>
+      {/* Modificaciones */}
+      <Puntuar
+        open={modal}
+        onClose={() => (setModal(false), setEditState(null))}
+        editState={editState}
+      />
     </>
   );
 };

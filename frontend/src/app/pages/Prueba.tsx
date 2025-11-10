@@ -1,236 +1,105 @@
-import React from "react";
+import React, { useState } from "react";
 import {
-  Box,
-  Card,
-  CardContent,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
   Typography,
-  Stack,
-  Divider,
+  Box,
 } from "@mui/material";
-import { Person, PointOfSale, Work } from "@mui/icons-material";
 
-interface Contratista {
+interface Pregunta {
   id: number;
-  nombreApellido: string;
-  telefono: string;
-  email: string;
-  matricula: string;
+  texto: string;
 }
 
-interface Rubro {
-  id: number;
-  nombre: string;
-  publicidad: string;
-  icono: string;
-  deleted: boolean;
-}
-
-interface Item {
-  id: number;
-  rubrosId: number;
-  contratistasId: number;
-  cantidadPuntuados: number;
-  sumatoriaPuntuados: number;
-  contratistas: Contratista;
-  rubros: Rubro;
-}
-
-// 🔹 Ejemplo de datos
-const data: Item[] = [
-  {
-    id: 1,
-    rubrosId: 1,
-    contratistasId: 1,
-    cantidadPuntuados: 1,
-    sumatoriaPuntuados: 9,
-    rubros: { id: 1, nombre: "Albañilería", publicidad: "", icono: "", deleted: false },
-    contratistas: {
-      id: 1,
-      nombreApellido: "Franquito",
-      telefono: "02901-5687522",
-      email: "otro@gmail.com",
-      matricula: "modif",
-    },
-  },
-  {
-    id: 2,
-    rubrosId: 1,
-    contratistasId: 2,
-    cantidadPuntuados: 3,
-    sumatoriaPuntuados: 27,
-    rubros: { id: 1, nombre: "Albañilería", publicidad: "", icono: "", deleted: false },
-    contratistas: {
-      id: 2,
-      nombreApellido: "Luis Pérez",
-      telefono: "02901-123456",
-      email: "luis@gmail.com",
-      matricula: "123",
-    },
-  },
-  {
-    id: 3,
-    rubrosId: 1,
-    contratistasId: 1,
-    cantidadPuntuados: 1,
-    sumatoriaPuntuados: 9,
-    rubros: { id: 1, nombre: "Albañilería", publicidad: "", icono: "", deleted: false },
-    contratistas: {
-      id: 1,
-      nombreApellido: "Franquito",
-      telefono: "02901-5687522",
-      email: "otro@gmail.com",
-      matricula: "modif",
-    },
-  },
-  {
-    id: 4,
-    rubrosId: 1,
-    contratistasId: 2,
-    cantidadPuntuados: 3,
-    sumatoriaPuntuados: 27,
-    rubros: { id: 1, nombre: "Albañilería", publicidad: "", icono: "", deleted: false },
-    contratistas: {
-      id: 2,
-      nombreApellido: "Luis Pérez",
-      telefono: "02901-123456",
-      email: "luis@gmail.com",
-      matricula: "123",
-    },
-  },
-  {
-    id: 5,
-    rubrosId: 1,
-    contratistasId: 1,
-    cantidadPuntuados: 1,
-    sumatoriaPuntuados: 9,
-    rubros: { id: 1, nombre: "Albañilería", publicidad: "", icono: "", deleted: false },
-    contratistas: {
-      id: 1,
-      nombreApellido: "Franquito",
-      telefono: "02901-5687522",
-      email: "otro@gmail.com",
-      matricula: "modif",
-    },
-  },
-  {
-    id: 6,
-    rubrosId: 1,
-    contratistasId: 2,
-    cantidadPuntuados: 3,
-    sumatoriaPuntuados: 27,
-    rubros: { id: 1, nombre: "Albañilería", publicidad: "", icono: "", deleted: false },
-    contratistas: {
-      id: 2,
-      nombreApellido: "Luis Pérez",
-      telefono: "02901-123456",
-      email: "luis@gmail.com",
-      matricula: "123",
-    },
-  },
-  {
-    id: 7,
-    rubrosId: 2,
-    contratistasId: 3,
-    cantidadPuntuados: 2,
-    sumatoriaPuntuados: 15,
-    rubros: { id: 2, nombre: "Electricidad", publicidad: "", icono: "", deleted: false },
-    contratistas: {
-      id: 3,
-      nombreApellido: "Carlos Díaz",
-      telefono: "02901-987654",
-      email: "carlos@gmail.com",
-      matricula: "555",
-    },
-  },
+const preguntas: Pregunta[] = [
+  { id: 1, texto: "¿Cumple con los plazos acordados?" },
+  { id: 2, texto: "¿Mantiene buena comunicación durante el proyecto?" },
+  { id: 3, texto: "¿Entregó el trabajo con buena calidad?" },
+  { id: 4, texto: "¿Responde rápidamente a los mensajes?" },
+  { id: 5, texto: "¿Recomendarías trabajar con este contratista nuevamente?" },
 ];
 
 export const Prueba = () => {
-  // Agrupar por rubro
-  const rubrosMap = data.reduce<Record<number, Item[]>>((acc, item) => {
-    if (!acc[item.rubrosId]) acc[item.rubrosId] = [];
-    acc[item.rubrosId].push(item);
-    return acc;
-  }, {});
+  const [open, setOpen] = useState(false);
+  const [respuestas, setRespuestas] = useState<Record<number, string>>({});
 
-  const rubros = Object.values(
-    data.reduce<Record<number, Rubro>>((acc, item) => {
-      acc[item.rubros.id] = item.rubros;
-      return acc;
-    }, {})
-  );
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const handleChange = (id: number, value: string) => {
+    setRespuestas((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = () => {
+    console.log("Respuestas enviadas:", respuestas);
+    // Aquí podrías enviar las respuestas a la API o Redux
+    setOpen(false);
+  };
 
   return (
-    <Box sx={{ p: 3 }}>
-      {rubros.map((rubro) => (
-        <Stack
-          key={rubro.id}
-          direction="row"
-          alignItems="flex-start"
-          spacing={2}
-          sx={{
-            mb: 4,
-            p: 2,
-            borderRadius: 2,
-            boxShadow: 3,
-            backgroundColor: "#f9f9f9",
-          }}
-        >
-          {/* 📘 Columna del título */}
-          <Box sx={{ minWidth: 180, textAlign: "center" }}>
-            <Typography fontWeight="bold" color="primary" variant="h6">{rubro.nombre}</Typography>
-          </Box>
+    <div>
+      {/* 👉 Botón que abre el modal (simula el "Puntuar") */}
+      <div
+        onClick={handleOpen}
+        style={{
+          transform: "rotate(270deg)",
+          cursor: "pointer",
+          color: "#008F9E",
+          fontWeight: "bold",
+          userSelect: "none",
+        }}
+      >
+        Puntuar
+      </div>
 
-          {/* 📋 ListView de contratistas */}
-          <Box
-            sx={{
-              flex: 1,
-              maxHeight: 600,
-              overflowY: "auto",
-              pr: 1,
-              "&::-webkit-scrollbar": { width: "6px" },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#ccc",
-                borderRadius: "8px",
-              },
-            }}
-          >
-            {rubrosMap[rubro.id]?.slice(0, 5).map((item) => (
-              <Card
-                key={item.id}
-                sx={{
-                  mb: 2,
-                  borderRadius: 3,
-                  p: 1,
-                  boxShadow: 1,
-                  "&:hover": {
-                    transform: "scale(1.02)",
-                    transition: "0.2s",
-                  },
-                }}
+      {/* 🧩 Modal */}
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+        <DialogTitle>Puntuar contratista</DialogTitle>
+        <DialogContent>
+          {preguntas.map((p) => (
+            <Box key={p.id} sx={{ mb: 2 }}>
+              <RadioGroup
+                row
+                value={respuestas[p.id] || ""}
+                onChange={(e) => handleChange(p.id, e.target.value)}
               >
-                <Stack direction="row" alignItems="center" spacing={2}>
-                  <Person sx={{ fontSize: 40, color: "primary.main" }} />
-                  <CardContent sx={{ flex: 1 }}>
-                    <Typography variant="h6" fontWeight="bold">
-                      {item.contratistas.nombreApellido}
-                    </Typography>
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                      <Work sx={{ color: "text.secondary" }} fontSize="small" />
-                      <Typography variant="body2" color="text.secondary">
-                        {item.contratistas.telefono}
-                      </Typography>
-                    </Stack>
-                    <Typography variant="body2" color="text.secondary">
-                      {item.contratistas.email}
-                    </Typography>
-                  </CardContent>
-                    <PointOfSale/>
-                </Stack>
-              </Card>
-            ))}
-          </Box>
-        </Stack>
-      ))}
-    </Box>
+              <Typography fontWeight="bold" gutterBottom>
+                {p.texto}
+              </Typography>
+                <FormControlLabel
+                  value="si"
+                  control={<Radio color="primary" />}
+                  label="Sí"
+                />
+                <FormControlLabel
+                  value="no"
+                  control={<Radio color="primary" />}
+                  label="No"
+                />
+                <FormControlLabel
+                  value="a_veces"
+                  control={<Radio color="primary" />}
+                  label="A veces"
+                />
+              </RadioGroup>
+            </Box>
+          ))}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="error">
+            Cancelar
+          </Button>
+          <Button onClick={handleSubmit} variant="contained" color="primary">
+            Enviar
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
-};
+}

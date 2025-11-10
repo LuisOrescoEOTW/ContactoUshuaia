@@ -81,6 +81,10 @@ def borrarContratistas(contratistas_id: int, db: Session = Depends(get_db)):
 def listarRubrosXContratistas(db: Session = Depends(get_db)):
     return db.query(models.RubrosXContratistas).filter(models.RubrosXContratistas.deleted == False).order_by(models.RubrosXContratistas.rubrosId).all()
 
+@app.get("/RubrosXContratistasHabilitados/", response_model=list[schemas.RubrosXContratistas])
+def listarRubrosXContratistas(db: Session = Depends(get_db)):
+    return db.query(models.RubrosXContratistas).filter(models.RubrosXContratistas.deleted == False, models.RubrosXContratistas.habilitado == True).order_by(models.RubrosXContratistas.rubrosId).all()
+
 @app.get("/RubrosXContratistas/{contratista_id}", response_model=list[schemas.RubrosXContratistas])
 def listarRubrosXContratistasByContratista(contratista_id: int, db: Session = Depends(get_db)):
     return db.query(models.RubrosXContratistas).filter(models.RubrosXContratistas.deleted == False, models.RubrosXContratistas.contratistasId == contratista_id).order_by(models.RubrosXContratistas.rubrosId).all()
