@@ -1,10 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
-import {
-  getRubrosXContratistas,
-  getRubrosXContratistasHabilitados,
-} from "../../redux/slices/rubrosXContratistas/rubrosXContratistasThunks";
+import { getRubrosXContratistasHabilitados } from "../../redux/slices/rubrosXContratistas/rubrosXContratistasThunks";
 import {
   getPalabrasClaves,
   getPalabrasClavesNombresUnicos,
@@ -14,6 +11,7 @@ import {
   Autocomplete,
   Box,
   Card,
+  CardActionArea,
   CardContent,
   Rating,
   Stack,
@@ -25,10 +23,10 @@ import { getRubros } from "../../redux/slices/rubros/rubrosThunks";
 import { Person } from "@mui/icons-material";
 import { Puntuar } from "../components/Puntuar";
 import type { IrubroXContratista } from "../models/IrubroXContratista";
-import { set } from "react-hook-form";
 
 export const Principal = () => {
   const dispatch = useDispatch<AppDispatch>();
+
   const { rubrosXContratistas = [] } = useSelector(
     (state: RootState) => state.rubrosXContratistas
   );
@@ -98,9 +96,8 @@ export const Principal = () => {
 
   //Abrir ventana para puntuar
   const [modal, setModal] = useState(false);
-  const [editState, setEditState] = useState<IrubroXContratista | null>(null)
+  const [editState, setEditState] = useState<IrubroXContratista | null>(null);
   const handlePuntuar = (item: any) => {
-    console.log(item);
     setEditState(item);
     setModal(true);
   };
@@ -120,6 +117,7 @@ export const Principal = () => {
         }}
       >
         <Box
+          id="logoInicio"
           sx={{
             display: "grid",
             gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
@@ -127,8 +125,18 @@ export const Principal = () => {
             padding: "20px",
           }}
         >
-          <div>Acerca del Sitio</div>
-          <div style={{ textAlign: "end" }}>Preguntas Frecuentes</div>
+          <a
+            href="#acercaDelSitio"
+            style={{ color: "white", textDecoration: "none" }}
+          >
+            Acerca del Sitio
+          </a>
+          <a
+            href="#preguntasFrecuentes"
+            style={{ color: "white", textDecoration: "none", textAlign: "end" }}
+          >
+            Preguntas Frecuentes
+          </a>
         </Box>
 
         <div
@@ -463,12 +471,11 @@ export const Principal = () => {
                               {item.contratistas?.nombreApellido}
                             </span>
                             <Rating
-                              defaultValue={
+                              value={
                                 item.cantidadPuntuados > 2
-                                  ? (item.sumatoriaPuntuados == 0
-                                      ? 0
-                                      : item.sumatoriaPuntuados /
-                                        item.cantidadPuntuados) / 2
+                                  ? item.sumatoriaPuntuados /
+                                    item.cantidadPuntuados /
+                                    2
                                   : 0
                               }
                               precision={0.5}
@@ -522,7 +529,95 @@ export const Principal = () => {
           ))}
         </Box>
       </div>
-      {/* Modificaciones */}
+
+      {/* acerca del sitio */}
+      <Box sx={{ p: 2 }}>
+        <Card
+          style={{
+            // margin: "20px",
+            backgroundColor: "#008F9E",
+            color: "whitesmoke",
+          }}
+        >
+          <CardActionArea>
+            <CardContent>
+              <Typography
+                id="acercaDelSitio"
+                gutterBottom
+                variant="h4"
+                component="div"
+              >
+                Acerca del sitio
+              </Typography>
+              <Typography variant="h6">
+                El gran misterio: la gente con un desastre en casa (o en la
+                obra) no encuentra a la gente que sabe cómo arreglarlo. En
+                <span style={{ fontWeight: "bold" }}> Ushuaia</span>, el pase de
+                datos de plomeros, puntores, electricistas y demás es por el
+                método prehistórico del boca en boca. ¡Pero eso se acabó. Esto
+                es
+                <span style={{ fontWeight: "bold" }}> CONTACTO Ushuaia</span>.
+                Su única misión es meter toda esa info en un solo lugar y que
+                encontrar a un experto sea mas fácil que pelar una papa. Sobre
+                todo, cuando el caos es inminente: ese tablero que echa chispas,
+                el temido olor a gas, o el manantial que acaba de brotar de tu
+                pared.
+              </Typography>
+              <Typography variant="h6">
+                <span style={{ fontWeight: "bold" }}>CONTACTO Ushuaia </span>
+                actúa únicamente como una plataforma de publicación e
+                informativa para poner en contacto a potenciales clientes con
+                contratistas independientes.
+              </Typography>
+              <Typography variant="h6">
+                <span style={{ fontWeight: "bold" }}>CONTACTO Ushuaia </span>
+                no se responsabiliza, bajo ninguna circunstancia, por la
+                calidad, ejecución, legalidad o cumplimiento de los trabajos o
+                servicios contratados por el cliente al contratista. Al utilizar
+                esta plataforma, el cliente y el contratista aceptan
+                expresamente que
+                <span style={{ fontWeight: "bold" }}> CONTACTO Ushuaia </span>
+                queda exonerado de toda responsabilidad legal, financiera y
+                material derivada de sus interacciones y acuerdos privados.
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+
+        {/* Preguntas Frecuentes */}
+        <Card
+          style={{
+            // margin: "20px",
+            marginTop: "20px",
+            backgroundColor: "#008F9E",
+            color: "whitesmoke",
+          }}
+        >
+          <CardActionArea>
+            <CardContent>
+              <Typography
+                id="preguntasFrecuentes"
+                gutterBottom
+                variant="h4"
+                component="div"
+              >
+                Preguntas Frecuentes
+              </Typography>
+              <Typography variant="h6" fontWeight={"bold"}>
+                ¿Cómo puedo publicar mi servicios?
+              </Typography>
+              <Typography variant="h6">
+                Comunicate a través del correo XXX@xxx.com o por WhatsApp al
+                2091-xxxxxx y te enviaremos un formulario.
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+      </Box>
+
+      <a href="#logoInicio" >Volver al inicio</a>
+
+      {/* Formulario Puntuar */}
       <Puntuar
         open={modal}
         onClose={() => (setModal(false), setEditState(null))}

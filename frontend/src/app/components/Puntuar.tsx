@@ -65,22 +65,23 @@ export const Puntuar: React.FC<Props> = ({ open, onClose, editState }) => {
 
   // Actualizar
   const onSubmit = () => {
- 
     const data = {
       ...editState,
-      sumatoriaPuntuados: editState?.sumatoriaPuntuados? editState?.sumatoriaPuntuados + total  : total,
-      cantidadPuntuados: editState?.cantidadPuntuados? editState?.cantidadPuntuados + 1 : 1,
+      sumatoriaPuntuados: editState?.sumatoriaPuntuados
+        ? editState?.sumatoriaPuntuados + total
+        : total,
+      cantidadPuntuados: editState?.cantidadPuntuados
+        ? editState?.cantidadPuntuados + 1
+        : 1,
     };
-    console.log("Datos enviados:", data);
     delete data.contratistas;
     delete data.rubros;
-    console.log("Datos enviados:", data);
-
-    
     dispatch(putRubrosXContratistasRefresh(data))
-      .then(() => toast.info("Elemento modificado"))
+      .then(() => {
+        toast.info("Elemento modificado");
+        onClose();
+      })
       .catch(() => toast.error("Error al modificar el elemento"));
-    onClose();
   };
 
   return (
@@ -94,9 +95,9 @@ export const Puntuar: React.FC<Props> = ({ open, onClose, editState }) => {
               alignItems: "center",
               color: "#008F9E",
               fontWeight: "bold",
-              fontSize:"30px",
+              fontSize: "30px",
             }}
-            >
+          >
             Puntuar Contratista
           </DialogTitle>
 
@@ -170,7 +171,7 @@ export const Puntuar: React.FC<Props> = ({ open, onClose, editState }) => {
               </Typography>
               <Rating
                 // value={total / preguntas.length}
-                value={total/2}
+                value={total / 2}
                 precision={0.5}
                 readOnly
               />
