@@ -78,7 +78,7 @@ export const Puntuar: React.FC<Props> = ({ open, onClose, editState }) => {
     delete data.rubros;
     dispatch(putRubrosXContratistasRefresh(data))
       .then(() => {
-        toast.info("Elemento modificado");
+        toast.success("Se registro su puntuación");
         onClose();
       })
       .catch(() => toast.error("Error al modificar el elemento"));

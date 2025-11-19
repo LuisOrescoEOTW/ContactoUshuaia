@@ -16,6 +16,7 @@ import {
   Rating,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import type { IpalabrasClaves } from "../models/IpalabrasClaves";
@@ -102,8 +103,77 @@ export const Principal = () => {
     setModal(true);
   };
 
+  //Scroll chico
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    // Al hacer scroll visualice el header
+    const handleScroll = () => {
+      if (window.scrollY > 410) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    
+    //Altura del header al hacer href
+    const HEADER_HEIGHT_COMPENSATION = "15vh";
+    document.documentElement.style.scrollPaddingTop = HEADER_HEIGHT_COMPENSATION; //estilo de HTML
+    document.documentElement.style.scrollBehavior = "smooth";
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.documentElement.style.scrollPaddingTop = ""; //limpio
+      document.documentElement.style.scrollBehavior = ""; //limpio
+    }
+  }, []);
+
   return (
     <>
+      {/* Recuadro pequeño */}
+      {scrolled && (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            backgroundColor: "#008F9E",
+            padding: "0.3%",
+            width: "100vw",
+            position: "fixed",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <a
+            href="#acercaDelSitio"
+            style={{
+              textAlign: "left",
+              color: "whitesmoke",
+              textDecoration: "none",
+            }}
+          >
+            Acerca del Sitio
+          </a>
+          <a href="#logoInicio" style={{ textAlign: "center" }}>
+            <Tooltip title="Volver al Inicio">
+              <img style={{ height: "10vh" }} src={imagen} />
+            </Tooltip>
+          </a>
+          <a
+            href="#preguntasFrecuentes"
+            style={{
+              textAlign: "right",
+              marginRight: "3%",
+              color: "whitesmoke",
+              textDecoration: "none",
+            }}
+          >
+            Preguntas Frecuentes
+          </a>
+        </div>
+      )}
+
       {/* Recuadro azul */}
       <div
         style={{
@@ -291,15 +361,17 @@ export const Principal = () => {
                   alignItems: "center", // 🔹 Centra imagen y texto
                 }}
               >
-                <img
-                  src={`../src/app/images/iconos/${pc.rubros?.icono}`}
-                  alt={pc.rubros?.nombre}
-                  style={{
-                    height: "60px",
-                    width: "60px",
-                    objectFit: "contain",
-                  }}
-                />
+                <a href={"#" + pc.rubros?.nombre}>
+                  <img
+                    src={`../src/app/images/iconos/${pc.rubros?.icono}`}
+                    alt={pc.rubros?.nombre}
+                    style={{
+                      height: "60px",
+                      width: "60px",
+                      objectFit: "contain",
+                    }}
+                  />
+                </a>
                 <div
                   style={{
                     color: "black",
@@ -348,15 +420,17 @@ export const Principal = () => {
                       alignItems: "center", // 🔹 Centra imagen y texto
                     }}
                   >
-                    <img
-                      src={`../src/app/images/iconos/${pc.icono}`}
-                      alt={pc.nombre}
-                      style={{
-                        height: "60px",
-                        width: "60px",
-                        objectFit: "contain",
-                      }}
-                    />
+                    <a href={"#" + pc.nombre}>
+                      <img
+                        src={`../src/app/images/iconos/${pc.icono}`}
+                        alt={pc.nombre}
+                        style={{
+                          height: "60px",
+                          width: "60px",
+                          objectFit: "contain",
+                        }}
+                      />
+                    </a>
                     <div
                       style={{
                         color: "black",
@@ -407,6 +481,7 @@ export const Principal = () => {
               >
                 <Box sx={{ display: "flex", alignItems: "left", gap: 2 }}>
                   <img
+                    id={rubro.nombre}
                     src={`../src/app/images/iconos/${rubro?.icono}`}
                     alt={rubro?.nombre}
                     style={{
@@ -537,6 +612,7 @@ export const Principal = () => {
             // margin: "20px",
             backgroundColor: "#008F9E",
             color: "whitesmoke",
+            borderRadius: "20px",
           }}
         >
           <CardActionArea>
@@ -591,6 +667,7 @@ export const Principal = () => {
             marginTop: "20px",
             backgroundColor: "#008F9E",
             color: "whitesmoke",
+            borderRadius: "20px",
           }}
         >
           <CardActionArea>
@@ -615,7 +692,26 @@ export const Principal = () => {
         </Card>
       </Box>
 
-      <a href="#logoInicio" >Volver al inicio</a>
+      {/* Pie de Página */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr",
+          backgroundColor: "black",
+          padding: "2%",
+        }}
+      >
+        <a
+          href="#logoInicio"
+          style={{
+            textAlign: "center",
+            color: "GrayText",
+            textDecoration: "none",
+          }}
+        >
+          Volver al inicio
+        </a>
+      </div>
 
       {/* Formulario Puntuar */}
       <Puntuar
