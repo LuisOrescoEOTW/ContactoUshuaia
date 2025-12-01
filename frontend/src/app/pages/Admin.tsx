@@ -4,10 +4,27 @@ import { useState } from "react";
 import { RubrosXContratistas } from "./RubrosXContratistas";
 import type { Icontratista } from "../models/Icontratista";
 import { Rubros } from "./Rubros";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase";
+import { Link, useNavigate } from "react-router-dom";
+import { Box, Button } from "@mui/material";
+import { toast } from "react-toastify";
 
 export const Admin = () => {
+  const [contratistaSelect, setContratistaSelect] =
+    useState<Icontratista | null>(null);
 
-  const [contratistaSelect, setContratistaSelect] = useState<Icontratista | null>(null);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      toast.success("Sesión cerrada correctamente");
+      navigate("/");
+    } catch (error) {
+      toast.error("No se pudo cerrar sesión");
+    }
+  };
 
   return (
     <>
@@ -19,7 +36,7 @@ export const Admin = () => {
         }}
       >
         <Contratistas contratista={setContratistaSelect} />
-        <RubrosXContratistas contratista={contratistaSelect}/>
+        <RubrosXContratistas contratista={contratistaSelect} />
         <Rubros contratista={contratistaSelect} />
 
         {/*<Rubros onClose={setRubrosSelect} selectedId={rubrosSelect} /> */}
@@ -34,46 +51,26 @@ export const Admin = () => {
       >
         <PalabrasClaves />
       </div>
-      {/* Validar Agregar 
-      <AlertDialogAgregar open={openDialog} onClose={handleDialogClose} />;
-      */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gridTemplateColumns: "1fr 1fr",
+          padding: "2%",
+          marginTop: "20px",
+        }}
+      >
+        <div style={{ flexGrow: 1 }}>
+          <Box mt={2} display="flex" justifyContent="space-between">
+            <Link to="/">Ir a Pantalla Principal</Link>
+          </Box>
+        </div>
+        <div style={{ flexGrow: 1 }}>
+          <Button variant="contained" color="error" onClick={handleLogout}>
+            Cerrar sesión
+          </Button>
+        </div>
+      </div>
     </>
   );
 };
-
-
-  // const [rubrosSelect, setRubrosSelect] = useState<number | null>(null);
-  // const dispatch = useDispatch<AppDispatch>();
-
-  // Aceptar agregar
-  // const [openDialog, setOpenDialog] = useState(false);
-  // const handleDialogClose = (confirm: boolean) => {
-  //   if (confirm && contratistaSelect !== null && rubrosSelect !== null) {
-  //     const newAssociation: IrubroXContratista = {
-  //       contratistasId: contratistaSelect,
-  //       rubrosId: rubrosSelect,
-  //       cantidadPuntuados: 0, 
-  //       sumatoriaPuntuados: 0,
-  //     };
-  //     console.log("Nueva asociación a agregar:", newAssociation);
-  //     dispatch(postRubrosXContratistas(newAssociation))
-  //       .then(() => toast.success("Elemento agregado"))
-  //       .catch(() => toast.error("Error al agregar el elemento"));
-  //   }
-  //   setRubrosSelect(null);
-  //   setOpenDialog(false);
-  // };
-
-  // Combinación de selecciones
-  // const ambasSelecciones = () => {
-  //   if (contratistaSelect !== null && rubrosSelect !== null) {
-  //     console.log("Ambas selecciones son válidas");
-  //     setOpenDialog(true);
-  //     return true;
-  //   }
-  //   console.log("Falta una selección válida");
-  //   return false;
-  // };
-  // useEffect(() => {
-  //   ambasSelecciones();
-  // }, [contratistaSelect, rubrosSelect]);

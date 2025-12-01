@@ -24,9 +24,11 @@ import { getRubros } from "../../redux/slices/rubros/rubrosThunks";
 import { Person } from "@mui/icons-material";
 import { Puntuar } from "../components/Puntuar";
 import type { IrubroXContratista } from "../models/IrubroXContratista";
+import { useNavigate } from "react-router-dom";
 
 export const Principal = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const { rubrosXContratistas = [] } = useSelector(
     (state: RootState) => state.rubrosXContratistas
@@ -116,17 +118,18 @@ export const Principal = () => {
       }
     };
     window.addEventListener("scroll", handleScroll);
-    
+
     //Altura del header al hacer href
     const HEADER_HEIGHT_COMPENSATION = "15vh";
-    document.documentElement.style.scrollPaddingTop = HEADER_HEIGHT_COMPENSATION; //estilo de HTML
+    document.documentElement.style.scrollPaddingTop =
+      HEADER_HEIGHT_COMPENSATION; //estilo de HTML
     document.documentElement.style.scrollBehavior = "smooth";
-    
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
       document.documentElement.style.scrollPaddingTop = ""; //limpio
       document.documentElement.style.scrollBehavior = ""; //limpio
-    }
+    };
   }, []);
 
   return (
@@ -699,17 +702,23 @@ export const Principal = () => {
           gridTemplateColumns: "1fr",
           backgroundColor: "black",
           padding: "2%",
+          color: "GrayText",
         }}
       >
         <a
           href="#logoInicio"
           style={{
             textAlign: "center",
-            color: "GrayText",
             textDecoration: "none",
           }}
         >
           Volver al inicio
+        </a>
+        <a
+          style={{ textAlign: "right", cursor: "pointer" }}
+          onClick={() => navigate("/admin")}
+        >
+          Admin
         </a>
       </div>
 
