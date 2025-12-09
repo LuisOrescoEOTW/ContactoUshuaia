@@ -458,9 +458,7 @@ export const Principal = () => {
           {rubrosConContratistas.map((rubro) => (
             <Stack
               key={rubro.id}
-              // direction="row"
               direction={{ xs: "column", md: "row" }}
-              // alignItems="flex-start"
               spacing={2}
               sx={{
                 mb: 2,
@@ -470,16 +468,14 @@ export const Principal = () => {
                 backgroundColor: "#f9f9f9",
               }}
             >
-              {/* 🧩 Columna izquierda: imagen, título y recuadro */}
               <Box
                 sx={{
                   display: "flex",
                   flexDirection: "column", // apila verticalmente
-                  alignItems: "center",
+                  alignItems: "left",
+                  gap: 2,
                   minWidth: { xs: "100%", md: 220 },
                   mb: { xs: 2, md: 0 },
-                  // minWidth: 220,
-                  // flexShrink: 0,
                 }}
               >
                 <Box sx={{ display: "flex", alignItems: "left", gap: 2 }}>
@@ -522,7 +518,6 @@ export const Principal = () => {
                 </Box>
               </Box>
 
-              {/* 📋 Columna derecha: ListView de contratistas */}
               <Box
                 sx={{
                   flex: 1,
@@ -710,6 +705,7 @@ export const Principal = () => {
           style={{
             textAlign: "center",
             textDecoration: "none",
+            color: "whitesmoke",
           }}
         >
           Volver al inicio
