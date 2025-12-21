@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { Irubros } from "../models/Irubros";
 import { Controller, useForm } from "react-hook-form";
 import { postRubros, putRubros } from "../../redux/slices/rubros/rubrosThunks";
@@ -22,7 +22,12 @@ interface Props {
   contratista: Icontratista | null;
 }
 
-export const RubrosForm: React.FC<Props> = ({ open, onClose, editState, contratista }) => {
+export const RubrosForm: React.FC<Props> = ({
+  open,
+  onClose,
+  editState,
+  contratista,
+}) => {
   //Leer
   const dispatch = useDispatch<AppDispatch>();
 
@@ -38,7 +43,16 @@ export const RubrosForm: React.FC<Props> = ({ open, onClose, editState, contrati
     handleSubmit,
     formState: { errors },
     reset,
+    setValue, // <--- 1. Extraemos setValue para actualizar manualmente
+    watch, // <--- 2. Extraemos watch para observar la imagen en tiempo real
+    register, // <--- 1. Importante registrar el campo manualmente
   } = useForm<Irubros>({ defaultValues: inicialState });
+
+  register("publicidad");
+
+  // Manejo de la imagen
+  const publicidadValue = watch("publicidad");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Resetear el formulario con los valores de editState cuando cambia
   useEffect(() => {
@@ -47,7 +61,7 @@ export const RubrosForm: React.FC<Props> = ({ open, onClose, editState, contrati
     } else {
       reset(inicialState);
     }
-  }, [editState, reset]);
+  }, [editState, reset, open]);
 
   // Guardar (Agregar/Editar)
   const onSubmit = (data: Irubros) => {
@@ -60,7 +74,30 @@ export const RubrosForm: React.FC<Props> = ({ open, onClose, editState, contrati
         .then(() => toast.success("Elemento agregado"))
         .catch(() => toast.error("Error al agregar el elemento"));
     }
-    onClose(); // Cerrar modal después de agregar/editar
+    onClose();
+  };
+
+  // Función para manejar la selección del archivo
+  const manejarCambioArchivo = (e: any) => {
+    const archivo = e.target.files[0];
+    if (archivo) {
+      const reader = new FileReader();
+      // Cuando el archivo se termine de leer...
+      reader.onloadend = () => {
+        const resultado = reader.result;
+        if (typeof resultado === "string") {
+          setValue("publicidad", resultado, {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true,
+          });
+        }
+      };
+      // Inicia la conversión a Base64
+      reader.readAsDataURL(archivo);
+      // Limpiar el input para permitir seleccionar el mismo archivo después
+      e.target.value = "";
+    }
   };
 
   return (
@@ -109,20 +146,69 @@ export const RubrosForm: React.FC<Props> = ({ open, onClose, editState, contrati
             />
           )}
         />
-        <Controller
-          name="publicidad"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              margin="dense"
-              label="Publicidad"
-              fullWidth
-              error={!!errors.publicidad}
-              helperText={errors.publicidad?.message}
-            />
-          )}
-        />
+
+        {/* Imagen */}
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
+          {/* Input oculto */}
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={manejarCambioArchivo}
+            style={{ display: "none" }}
+          />
+
+          {/* Visualización previa */}
+          <div
+            style={{
+              marginTop: "20px",
+              minHeight: "150px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#f9f9f9",
+            }}
+          >
+            {publicidadValue ? (
+              <>
+                <img
+                  src={
+                    publicidadValue.startsWith("data:")
+                      ? publicidadValue
+                      : `data:image/png;base64,${publicidadValue}`
+                  }
+                  alt="Vista previa"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "200px",
+                    borderRadius: "8px",
+                    objectFit: "contain",
+                  }}
+                />
+              </>
+            ) : (
+              <p style={{ color: "#999" }}>Sin imagen</p>
+            )}
+          </div>
+
+          {/* Botón personalizado */}
+          <Button
+            variant="contained"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            +
+          </Button>
+
+          <Button
+            color="error"
+            size="small"
+            variant="text"
+            onClick={() => setValue("publicidad", "", { shouldDirty: true })}
+            style={{ marginTop: "10px" }}
+          >
+            -
+          </Button>
+        </div>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} variant="contained" color="error">

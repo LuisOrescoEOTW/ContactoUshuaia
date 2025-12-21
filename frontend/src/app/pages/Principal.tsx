@@ -143,9 +143,8 @@ export const Principal = () => {
             backgroundColor: "#008F9E",
             padding: "0.3%",
             width: "100vw",
-            position: "fixed",
-            alignItems: "center",
-            zIndex: 1000,
+            position: "fixed", // Fijo en la parte superior
+            zIndex: 1000, // Asegura que el header esté por encima de otros elementos
           }}
         >
           <a
