@@ -10,10 +10,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Fab,
   TextField,
+  Tooltip,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import type { Icontratista } from "../models/Icontratista";
+import { Add, Delete } from "@mui/icons-material";
 
 interface Props {
   open: boolean;
@@ -148,16 +151,39 @@ export const RubrosForm: React.FC<Props> = ({
         />
 
         {/* Imagen */}
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
-          {/* Input oculto */}
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={manejarCambioArchivo}
-            style={{ display: "none" }}
-          />
+        {/* Input oculto */}
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          onChange={manejarCambioArchivo}
+          style={{ display: "none" }}
+        />
 
+        <div style={{ textAlign: "right", marginTop: "20px", display: "flex", gap: "10px", justifyContent: "flex-end" }}>
+          {/* Botones */}
+
+          <Tooltip title="Agregar Imagen">
+            <Fab
+              color="success"
+              size="small"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Add />
+            </Fab>
+          </Tooltip>
+          <Tooltip title="Eliminar Imagen">
+            <Fab
+              size="small"
+              color="error"
+              onClick={() => setValue("publicidad", "", { shouldDirty: true })}
+            >
+              <Delete fontSize="small" />
+            </Fab>
+          </Tooltip>
+        </div>
+
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
           {/* Visualización previa */}
           <div
             style={{
@@ -190,24 +216,6 @@ export const RubrosForm: React.FC<Props> = ({
               <p style={{ color: "#999" }}>Sin imagen</p>
             )}
           </div>
-
-          {/* Botón personalizado */}
-          <Button
-            variant="contained"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            +
-          </Button>
-
-          <Button
-            color="error"
-            size="small"
-            variant="text"
-            onClick={() => setValue("publicidad", "", { shouldDirty: true })}
-            style={{ marginTop: "10px" }}
-          >
-            -
-          </Button>
         </div>
       </DialogContent>
       <DialogActions>
