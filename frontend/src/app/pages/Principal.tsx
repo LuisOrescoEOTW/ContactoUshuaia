@@ -178,38 +178,42 @@ export const Principal = () => {
 
       {/* Recuadro azul */}
       <div
+        id="logoInicio"
         style={{
-          display: "flex",
-          flexDirection: "column",
-          minHeight: "50vh",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
           backgroundColor: "#008F9E",
+          padding: "0.3%",
+          width: "100vw",
+          //position: "fixed", // Fijo en la parte superior
+          //zIndex: 1000, // Asegura que el header esté por encima de otros elementos
+
+          // display: "flex",
+          // flexDirection: "column",
+          // height: "50vh",
+          // backgroundColor: "#008F9E",
           color: "white",
           fontSize: "20px",
           fontWeight: "bold",
         }}
       >
-        <Box
+        {/* <Box
           id="logoInicio"
           sx={{
             display: "grid",
             gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
             textAlign: { xs: "center", sm: "left" },
             padding: "20px",
+            height: "auto", // Deja que los links ocupen su espacio natural
           }}
         >
-          <a
-            href="#acercaDelSitio"
-            style={{ color: "white", textDecoration: "none" }}
-          >
-            Acerca del Sitio
-          </a>
-          <a
-            href="#preguntasFrecuentes"
-            style={{ color: "white", textDecoration: "none", textAlign: "end" }}
-          >
-            Preguntas Frecuentes
-          </a>
-        </Box>
+          </Box> */}
+        <a
+          href="#acercaDelSitio"
+          style={{ color: "white", textDecoration: "none" }}
+        >
+          Acerca del Sitio
+        </a>
 
         <div
           style={{
@@ -228,6 +232,13 @@ export const Principal = () => {
             }}
           />
         </div>
+
+        <a
+          href="#preguntasFrecuentes"
+          style={{ color: "white", textDecoration: "none", textAlign: "end", marginRight: "3%" }}
+        >
+          Preguntas Frecuentes
+        </a>
       </div>
 
       {/* Buscar */}
@@ -498,23 +509,35 @@ export const Principal = () => {
                   </Typography>
                 </Box>
 
-                <Box
-                  sx={{
-                    width: { xs: "80%", md: 150 },
-                    height: { xs: 80, md: 100 },
-                    mt: 2,
-                    borderRadius: 2,
+                {/* Contenedor de la imagen centrado y flexible */}
+                <div
+                  style={{
+                    flex: 1, // Ocupa el resto del espacio del contenedor de 50vh
                     display: "flex",
-                    alignItems: "center",
                     justifyContent: "center",
-                    color: "#e0e0e0",
-                    fontSize: "1.2rem",
-                    fontWeight: "bold",
-                    boxShadow: 2,
+                    alignItems: "center",
+                    overflow: "hidden", // Evita desbordamientos
+                    paddingBottom: "20px", // Un pequeño respiro visual inferior
                   }}
                 >
-                  Publicidad
-                </Box>
+                  {rubro.publicidad ? (
+                    <img
+                      src={
+                        rubro.publicidad.startsWith("data:")
+                          ? rubro.publicidad
+                          : `data:image/png;base64,${rubro.publicidad}`
+                      }
+                      alt="Logo"
+                      style={{
+                        maxHeight: "100%", // Ocupa hasta el máximo del contenedor flexible
+                        maxWidth: "90%", // Evita que toque los bordes laterales
+                        objectFit: "contain", // Mantiene la proporción sin deformar
+                      }}
+                    />
+                  ) : (
+                    <p style={{ color: "#999" }}>Espacio Publicitario</p>
+                  )}
+                </div>
               </Box>
 
               <Box
