@@ -41,3 +41,11 @@ class PalabrasClaves(BaseModel):
     rubros: Optional[Rubros] = None # relación
     class Config:
         from_attributes = True  # Linux
+
+class PreguntasFrecuentes(BaseModel):
+    id: Optional[int] = None
+    pregunta: str
+    respuesta: str
+    deleted: bool | None = False
+    class Config:
+        from_attributes = True  # Linux

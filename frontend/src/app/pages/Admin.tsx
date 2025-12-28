@@ -9,6 +9,7 @@ import { auth } from "../../firebase";
 import { Link, useNavigate } from "react-router-dom";
 import { Box, Button } from "@mui/material";
 import { toast } from "react-toastify";
+import { PreguntasFrecuentes } from "./PreguntasFrecuentes";
 
 export const Admin = () => {
   const [contratistaSelect, setContratistaSelect] =
@@ -39,7 +40,6 @@ export const Admin = () => {
         <RubrosXContratistas contratista={contratistaSelect} />
         <Rubros contratista={contratistaSelect} />
 
-        {/*<Rubros onClose={setRubrosSelect} selectedId={rubrosSelect} /> */}
       </div>
       <div
         style={{
@@ -50,6 +50,7 @@ export const Admin = () => {
         }}
       >
         <PalabrasClaves />
+        <PreguntasFrecuentes />
       </div>
       <div
         style={{

@@ -3,13 +3,15 @@ import { rubrosSlice } from './slices/rubros/rubrosSlice'
 import { contratistasSlice } from './slices/contratistas/contratistasSlice'
 import { rubrosXContratistasSlice } from './slices/rubrosXContratistas/rubrosXContratistasSlice'
 import { palabrasClavesSlice } from './slices/palabrasClaves/palabrasClavesSlice'
+import { preguntasFrecuentesSlice } from './slices/preguntasFrecuentes/preguntasFrecuentesSlice'
 
 export const store = configureStore({
   reducer: {
     rubros: rubrosSlice.reducer,
     contratistas: contratistasSlice.reducer,    
     rubrosXContratistas: rubrosXContratistasSlice.reducer,
-    palabrasClaves: palabrasClavesSlice.reducer,    
+    palabrasClaves: palabrasClavesSlice.reducer,
+    preguntasFrecuentes: preguntasFrecuentesSlice.reducer,
   },
 })
 

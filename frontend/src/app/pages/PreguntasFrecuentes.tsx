@@ -1,43 +1,33 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { useEffect, useState } from "react";
-import {
-  deletePalabrasClaves,
-  getPalabrasClaves,
-} from "../../redux/slices/palabrasClaves/palabrasClavesThunks";
-import {
-  DataGrid,
-  type GridColDef,
-} from "@mui/x-data-grid";
+import { deletePreguntas, getPreguntas } from "../../redux/slices/preguntasFrecuentes/preguntasFrecuentesThunks";
+import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { Fab, Paper, Tooltip } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
-import type { IpalabrasClaves } from "../models/IpalabrasClaves";
+import type { IpreguntasFrecuentes } from "../models/IpreguntasFrecuentes";
 import { toast } from "react-toastify";
-import { PalabrasClavesForm } from "../components/PalabrasClavesForm";
+import { PreguntasFrecuentesForm } from "../components/PreguntasFrecuentesForm";
 import AlertDialogEliminar from "../hooks/AlertDialogEliminar";
 
-export const PalabrasClaves = () => {
+export const PreguntasFrecuentes = () => {
   // Leer
   const dispatch = useDispatch<AppDispatch>();
-  const { palabrasClaves = [] } = useSelector(
-    (state: RootState) => state.palabrasClaves
+  const { preguntas = [] } = useSelector(
+    (state: RootState) => state.preguntasFrecuentes
   );
 
   // General
   useEffect(() => {
-    dispatch(getPalabrasClaves());
+    dispatch(getPreguntas());
   }, [dispatch]);
 
   // Acciones
   const columns: GridColDef[] = [
     { field: "id", headerName: "Id", flex: 0.2 },
-    { field: "nombre", headerName: "Nombre", flex: 1 },
-    {
-      field: "rubros",
-      headerName: "Rubro",
-      flex: 1,
-      renderCell: (params) => <>{params.row?.rubros?.nombre ?? "Sin rubro"}</>,
-    },
+    { field: "pregunta", headerName: "Pregunta", flex: 1 },
+    { field: "respuesta", headerName: "Respuesta", flex: 1 },
+
     {
       field: "acciones",
       headerName: "Acciones",
@@ -88,14 +78,14 @@ export const PalabrasClaves = () => {
 
   // Agregar - Modificar
   const [modalAbrir, setModalAbrir] = useState(false);
-  const [editState, setEditState] = useState<IpalabrasClaves | null>(null);
+  const [editState, setEditState] = useState<IpreguntasFrecuentes | null>(null);
 
   //Borrar
   const [deleteId, setDeleteId] = useState<number | null>(null); // ID a eliminar
   const [openDialog, setOpenDialog] = useState(false);
   const handleDialogClose = (confirmDelete: boolean) => {
     if (confirmDelete && deleteId !== null) {
-      dispatch(deletePalabrasClaves(deleteId))
+      dispatch(deletePreguntas(deleteId))
         .then(() => toast.error("Elemento eliminado"))
         .catch(() => toast.error("Error al eliminar el elemento"));
     }
@@ -105,7 +95,7 @@ export const PalabrasClaves = () => {
 
   return (
     <>
-      {/* Palabras Claves */}
+      {/* Preguntas Frecuentes */}
       <div style={{ margin: "5px" }}>
         <div
           style={{
@@ -120,7 +110,7 @@ export const PalabrasClaves = () => {
             color: "white",
           }}
         >
-          <h2>Palabras Claves</h2>
+          <h2>Preguntas Frecuentes</h2>
           <div style={{ textAlign: "end" }}>
             <Tooltip title="Agregar">
               <Fab
@@ -139,10 +129,10 @@ export const PalabrasClaves = () => {
         </div>
 
         {/* <Paper sx={{ width: "100%", height: "100%" }}> */}
-        {palabrasClaves && (
+        {preguntas && (
           <Paper>
             <DataGrid
-              rows={palabrasClaves}
+              rows={preguntas}
               columns={columns}
               initialState={{
                 pagination: { paginationModel: paginationModels },
@@ -163,7 +153,7 @@ export const PalabrasClaves = () => {
       </div>
 
       {/* Alta - Modificaciones */}
-      <PalabrasClavesForm
+      <PreguntasFrecuentesForm
         open={modalAbrir}
         onClose={() => (setModalAbrir(false), setEditState(null))}
         editState={editState}

@@ -37,6 +37,7 @@ rubro_crud = CRUDBase(models.Rubros)
 contratista_crud = CRUDBase(models.Contratistas)
 rubroxcontratista_crud = CRUDBase(models.RubrosXContratistas)
 palabra_clave_crud = CRUDBase(models.PalabrasClaves)
+preguntas_crud = CRUDBase(models.PreguntasFrecuentes)
 
 # ==== ENDPOINTS RUBROS ====
 @app.get("/Rubros/", response_model=list[schemas.Rubros])
@@ -133,3 +134,24 @@ def actualizarPalabraClave(palabra_clave_id: int, registro: schemas.PalabrasClav
 @app.delete("/PalabrasClaves/{palabra_clave_id}")
 def borrarPalabraClave(palabra_clave_id: int, db: Session = Depends(get_db)):
     return palabra_clave_crud.logical_delete(db, palabra_clave_id)
+
+# ==== ENDPOINTS PREGUNTAS FRECUENTES ====
+@app.get("/PreguntasFrecuentes/", response_model=list[schemas.PreguntasFrecuentes])
+def listarPreguntasFrecuentes(db: Session = Depends(get_db)):
+    return db.query(models.PreguntasFrecuentes).filter(models.PreguntasFrecuentes.deleted == False).order_by(models.PreguntasFrecuentes.pregunta).all()
+
+@app.get("/PreguntasFrecuentes/{pregunta_id}", response_model=schemas.PreguntasFrecuentes)
+def listarPreguntasFrecuentesById(pregunta_id: int, db: Session = Depends(get_db)):
+    return preguntas_crud.get_by_id(db, pregunta_id)
+
+@app.post("/PreguntasFrecuentes/")
+def crearPreguntasFrecuentes(registro: schemas.PreguntasFrecuentes, db: Session = Depends(get_db)):
+    return preguntas_crud.create(db, registro)
+
+@app.put("/PreguntasFrecuentes/{pregunta_id}")
+def actualizarPreguntasFrecuentes(pregunta_id: int, registro: schemas.PreguntasFrecuentes, db: Session = Depends(get_db)):
+    return preguntas_crud.update(db, pregunta_id, registro)
+
+@app.delete("/PreguntasFrecuentes/{pregunta_id}")
+def borrarPreguntasFrecuentes(pregunta_id: int, db: Session = Depends(get_db)):
+    return preguntas_crud.logical_delete(db, pregunta_id)

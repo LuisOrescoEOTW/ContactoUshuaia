@@ -78,7 +78,7 @@ export const Puntuar: React.FC<Props> = ({ open, onClose, editState }) => {
     delete data.rubros;
     dispatch(putRubrosXContratistasRefresh(data))
       .then(() => {
-        toast.success("Se registro su puntuación");
+        toast.success("Actualización con 3ra puntuación");
         onClose();
       })
       .catch(() => toast.error("Error al modificar el elemento"));
@@ -111,17 +111,26 @@ export const Puntuar: React.FC<Props> = ({ open, onClose, editState }) => {
                 key={p.id}
                 sx={{
                   display: "flex",
-                  alignItems: "center",
                   justifyContent: "flex-start",
-                  gap: 3,
+                  gap: { xs: 0.5, md: 3 },
                   mt: 2,
+                  flexDirection: {
+                    xs: "column",
+                    md: "row",
+                  },
+                  alignItems: {
+                    xs: "flex-start",
+                    md: "center",
+                  },
                 }}
               >
                 <Typography
                   variant="body1"
                   color="text.primary"
                   fontWeight={p.id === 1 || p.id === 5 ? "bold" : "normal"}
-                  marginLeft={p.id === 1 || p.id === 5 ? 5 : 10}
+                  sx={{
+                    marginLeft: { md: p.id === 1 || p.id === 5 ? 5 : 10 },
+                  }}
                 >
                   {p.texto}
                 </Typography>

@@ -5,7 +5,7 @@ export const palabrasClavesSlice = createSlice({
   name: 'palabrasClaves',
   initialState: {
     palabrasClaves: Array<IpalabrasClaves>(),
-    palabrasClavesNombresUnicos: Array<IpalabrasClaves>(),
+    palabrasClavesNombresUnicos: Array<string>(),
   },
   reducers: {
     setPalabrasClaves: (state, action) => {

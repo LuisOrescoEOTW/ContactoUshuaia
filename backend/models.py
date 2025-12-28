@@ -42,3 +42,11 @@ class PalabrasClaves(Base):
     nombre = Column(String)
     deleted = Column(Boolean, default=False)
     rubros = relationship("Rubros")  # relación
+
+class PreguntasFrecuentes(Base):
+    __tablename__ = "PreguntasFrecuentes"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    pregunta = Column(String)
+    respuesta = Column(String)
+    deleted = Column(Boolean, default=False)
