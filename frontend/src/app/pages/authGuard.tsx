@@ -11,8 +11,6 @@ interface Props {
   onFail?: () => void;
 }
 
-const AUTHORIZED_EMAIL = "lhorescovich@gmail.com"; // <-- poné TU email aquí
-
 export const AuthGuard: React.FC<Props> = ({ children, onFail }) => {
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const location = useLocation();
@@ -31,12 +29,6 @@ export const AuthGuard: React.FC<Props> = ({ children, onFail }) => {
   if (!user) {
     if (onFail) onFail();
     return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  // Logueado pero no autorizado
-  if (user.email !== AUTHORIZED_EMAIL) {
-    if (onFail) onFail();
-    return <Navigate to="/" replace />;
   }
 
   // Autorizado

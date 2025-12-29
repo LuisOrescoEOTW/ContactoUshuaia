@@ -29,12 +29,14 @@ export const RubrosXContratistas: React.FC<Props> = ({ contratista }) => {
 
   // General
   useEffect(() => {
-    dispatch(getRubroXContratistasById(contratista ? contratista.id : 0));
-  }, [dispatch, contratista]);
+    if (contratista) {
+      dispatch(getRubroXContratistasById(contratista ? contratista.id : 0));
+    }
+  }, [contratista]);
 
   // Acciones
   const columns: GridColDef[] = [
-    { field: "id", headerName: "Id",flex: 0.1 },
+    { field: "id", headerName: "Id", flex: 0.1 },
     {
       field: "rubros",
       headerName: "Rubro",
@@ -109,6 +111,7 @@ export const RubrosXContratistas: React.FC<Props> = ({ contratista }) => {
     setChecked(event.target.checked);
     setOpenDialogEditar(true);
   };
+
   const handleDialogCloseEditar = (confirm: boolean) => {
     if (confirm && rowSelect) {
       const parsedData = {
@@ -172,25 +175,27 @@ export const RubrosXContratistas: React.FC<Props> = ({ contratista }) => {
         </div>
 
         {/* <Paper sx={{ width: "100%", height: "100%" }}> */}
-        <Paper>
-          <DataGrid
-            rows={rubrosXContratistas}
-            columns={columns}
-            initialState={{
-              pagination: { paginationModel: paginationModels },
-            }}
-            pageSizeOptions={[5, 10, 50, 100]}
-            checkboxSelection={false}
-            disableRowSelectionOnClick
-            sx={{
-              width: "100%",
-              height: "100%",
-              border: 2,
-              borderColor: "#D9D9D9",
-              "& .MuiDataGrid-virtualScroller": { overflow: "auto" },
-            }}
-          />
-        </Paper>
+        {rubrosXContratistas && (
+          <Paper>
+            <DataGrid
+              rows={rubrosXContratistas}
+              columns={columns}
+              initialState={{
+                pagination: { paginationModel: paginationModels },
+              }}
+              pageSizeOptions={[5, 10, 50, 100]}
+              checkboxSelection={false}
+              disableRowSelectionOnClick
+              sx={{
+                width: "100%",
+                height: "100%",
+                border: 2,
+                borderColor: "#D9D9D9",
+                "& .MuiDataGrid-virtualScroller": { overflow: "auto" },
+              }}
+            />
+          </Paper>
+        )}
       </div>
 
       {/* Alta - Modificaciones */}

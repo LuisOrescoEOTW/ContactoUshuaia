@@ -151,8 +151,6 @@ export const PrincipalRubrosXCont = () => {
                     sx={{ mb: 2, borderRadius: 3, pl: 2, pr: 2 }}
                   >
                     <Stack direction="row" alignItems="center" spacing={1}>
-                      {/* <Person sx={{ fontSize: 40, color: "primary.main" }} /> */}
-
                       <Person
                         sx={{
                           color: "primary.main",
@@ -222,6 +220,8 @@ export const PrincipalRubrosXCont = () => {
                               sm: "1.1rem",
                               md: "1.2rem", // desktop (h5 aprox)
                             },
+                            wordBreak: "break-all", // 🔥
+                            overflowWrap: "anywhere", // 🔥
                           }}
                         >
                           <span style={{ color: "black" }}>Correo: </span>

@@ -1,6 +1,6 @@
 import { Contratistas } from "./Contratistas";
 import { PalabrasClaves } from "./PalabrasClaves";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RubrosXContratistas } from "./RubrosXContratistas";
 import type { Icontratista } from "../models/Icontratista";
 import { Rubros } from "./Rubros";
@@ -10,12 +10,29 @@ import { Link, useNavigate } from "react-router-dom";
 import { Box, Button } from "@mui/material";
 import { toast } from "react-toastify";
 import { PreguntasFrecuentes } from "./PreguntasFrecuentes";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../redux/store";
+import { getContratistas } from "../../redux/slices/contratistas/contratistasThunks";
+import { getRubros } from "../../redux/slices/rubros/rubrosThunks";
+import { getPalabrasClaves } from "../../redux/slices/palabrasClaves/palabrasClavesThunks";
+import { getPreguntas } from "../../redux/slices/preguntasFrecuentes/preguntasFrecuentesThunks";
+import { vaciarRubrosXContratistas } from "../../redux/slices/rubrosXContratistas/rubrosXContratistasThunks";
 
 export const Admin = () => {
-  const [contratistaSelect, setContratistaSelect] =
-    useState<Icontratista | null>(null);
-
+  //Datos Inciales
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  
+  useEffect(() => {
+    dispatch(getContratistas());
+    dispatch(getRubros());
+    dispatch(getPalabrasClaves());
+    dispatch(getPreguntas());
+    dispatch(vaciarRubrosXContratistas());
+  }, [dispatch]);
+  
+  const [contratistaSelect, setContratistaSelect] =
+  useState<Icontratista | null>(null);
 
   const handleLogout = async () => {
     try {
@@ -36,10 +53,9 @@ export const Admin = () => {
           width: "99vw",
         }}
       >
-        <Contratistas contratista={setContratistaSelect} />
+        <Contratistas contratistaSelect={setContratistaSelect} />
         <RubrosXContratistas contratista={contratistaSelect} />
         <Rubros contratista={contratistaSelect} />
-
       </div>
       <div
         style={{

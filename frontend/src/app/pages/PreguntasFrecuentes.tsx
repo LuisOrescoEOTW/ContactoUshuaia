@@ -1,7 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
-import { useEffect, useState } from "react";
-import { deletePreguntas, getPreguntas } from "../../redux/slices/preguntasFrecuentes/preguntasFrecuentesThunks";
+import { useState } from "react";
+import {
+  deletePreguntas,
+} from "../../redux/slices/preguntasFrecuentes/preguntasFrecuentesThunks";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { Fab, Paper, Tooltip } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
@@ -11,6 +13,7 @@ import { PreguntasFrecuentesForm } from "../components/PreguntasFrecuentesForm";
 import AlertDialogEliminar from "../hooks/AlertDialogEliminar";
 
 export const PreguntasFrecuentes = () => {
+
   // Leer
   const dispatch = useDispatch<AppDispatch>();
   const { preguntas = [] } = useSelector(
@@ -18,9 +21,9 @@ export const PreguntasFrecuentes = () => {
   );
 
   // General
-  useEffect(() => {
-    dispatch(getPreguntas());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getPreguntas());
+  // }, [dispatch]);
 
   // Acciones
   const columns: GridColDef[] = [
@@ -96,71 +99,73 @@ export const PreguntasFrecuentes = () => {
   return (
     <>
       {/* Preguntas Frecuentes */}
-      <div style={{ margin: "5px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "#008F9E",
-            marginBottom: "1%",
-            paddingLeft: "3%",
-            paddingRight: "3%",
-            borderRadius: "20px",
-            color: "white",
-          }}
-        >
-          <h2>Preguntas Frecuentes</h2>
-          <div style={{ textAlign: "end" }}>
-            <Tooltip title="Agregar">
-              <Fab
-                color="success"
-                size="small"
-                onClick={(e) => {
-                  (e.currentTarget as HTMLButtonElement).blur(); // 👈 quita el foco
-                  setEditState(null);
-                  setModalAbrir(true);
+      {preguntas && (
+        <>
+          <div style={{ margin: "5px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                backgroundColor: "#008F9E",
+                marginBottom: "1%",
+                paddingLeft: "3%",
+                paddingRight: "3%",
+                borderRadius: "20px",
+                color: "white",
+              }}
+            >
+              <h2>Preguntas Frecuentes</h2>
+              <div style={{ textAlign: "end" }}>
+                <Tooltip title="Agregar">
+                  <Fab
+                    color="success"
+                    size="small"
+                    onClick={(e) => {
+                      (e.currentTarget as HTMLButtonElement).blur(); // 👈 quita el foco
+                      setEditState(null);
+                      setModalAbrir(true);
+                    }}
+                  >
+                    <Add />
+                  </Fab>
+                </Tooltip>
+              </div>
+            </div>
+
+            {/* <Paper sx={{ width: "100%", height: "100%" }}> */}
+            <Paper>
+              <DataGrid
+                rows={preguntas}
+                columns={columns}
+                initialState={{
+                  pagination: { paginationModel: paginationModels },
                 }}
-              >
-                <Add />
-              </Fab>
-            </Tooltip>
+                pageSizeOptions={[5, 10, 50, 100]}
+                checkboxSelection={false}
+                rowSelection={false}
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  border: 2,
+                  borderColor: "#D9D9D9",
+                  "& .MuiDataGrid-virtualScroller": { overflow: "auto" },
+                }}
+              />
+            </Paper>
           </div>
-        </div>
 
-        {/* <Paper sx={{ width: "100%", height: "100%" }}> */}
-        {preguntas && (
-          <Paper>
-            <DataGrid
-              rows={preguntas}
-              columns={columns}
-              initialState={{
-                pagination: { paginationModel: paginationModels },
-              }}
-              pageSizeOptions={[5, 10, 50, 100]}
-              checkboxSelection={false}
-              rowSelection={false}
-              sx={{
-                width: "100%",
-                height: "100%",
-                border: 2,
-                borderColor: "#D9D9D9",
-                "& .MuiDataGrid-virtualScroller": { overflow: "auto" },
-              }}
-            />
-          </Paper>
-        )}
-      </div>
+          {/* Alta - Modificaciones */}
+          <PreguntasFrecuentesForm
+            open={modalAbrir}
+            onClose={() => (setModalAbrir(false), setEditState(null))}
+            editState={editState}
+          />
 
-      {/* Alta - Modificaciones */}
-      <PreguntasFrecuentesForm
-        open={modalAbrir}
-        onClose={() => (setModalAbrir(false), setEditState(null))}
-        editState={editState}
-      />
-
-      {/* Modal Eliminar */}
-      <AlertDialogEliminar open={openDialog} onClose={handleDialogClose} />
+          {/* Modal Eliminar */}
+          <AlertDialogEliminar open={openDialog} onClose={handleDialogClose} />
+        </>
+      )}
     </>
   );
 };

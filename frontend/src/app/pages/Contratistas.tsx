@@ -1,8 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
-import { useEffect, useState } from "react";
-import { deleteContratistas, getContratistas } from "../../redux/slices/contratistas/contratistasThunks";
-import { DataGrid, type GridColDef, type GridRowSelectionModel } from "@mui/x-data-grid";
+import { useState } from "react";
+import {
+  deleteContratistas,
+} from "../../redux/slices/contratistas/contratistasThunks";
+import {
+  DataGrid,
+  type GridColDef,
+  type GridRowSelectionModel,
+} from "@mui/x-data-grid";
 import { Fab, Paper, Tooltip } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import type { Icontratista } from "../models/Icontratista";
@@ -11,18 +17,20 @@ import AlertDialogEliminar from "../hooks/AlertDialogEliminar";
 import { ContratistasForm } from "../components/ContratistasForm";
 
 interface Props {
-  contratista: (value: Icontratista | null) => void;
+  contratistaSelect: (value: Icontratista | null) => void;
 }
-export const Contratistas : React.FC<Props> = ({ contratista }) => {
+export const Contratistas: React.FC<Props> = ({ contratistaSelect }) => {
+
+  const dispatch = useDispatch<AppDispatch>();
+  const contratistas = useSelector((state: RootState) => state.contratistas.contratistas);
 
   // Leer
-  const dispatch = useDispatch<AppDispatch>();
-  const { contratistas = [] } = useSelector((state: RootState) => state.contratistas);
+  // const { contratistas = [] } = useSelector((state: RootState) => state.contratistas);
 
   // General
-  useEffect(() => {
-    dispatch(getContratistas());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getContratistas());
+  // }, [dispatch]);
 
   //
   const columns: GridColDef[] = [
@@ -87,7 +95,7 @@ export const Contratistas : React.FC<Props> = ({ contratista }) => {
       const modelo = Array.from(newSelectionModel.ids)[0];
       const id = modelo !== undefined ? Number(modelo) : null;
       const selectedContratista = contratistas.find((c) => c.id === id) || null;
-      contratista(selectedContratista);
+      contratistaSelect(selectedContratista);
     }
   };
 
@@ -110,68 +118,72 @@ export const Contratistas : React.FC<Props> = ({ contratista }) => {
 
   return (
     <>
-      {/* Contratistas */}
-      <div style={{ margin: "5px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "#008F9E",
-            marginBottom: "1%",
-            paddingLeft: "3%",
-            paddingRight: "3%",
-            borderRadius: "20px",
-            color: "white",
-          }}
-        >
-          <h2>Contratistas</h2>
-          <div style={{ textAlign: "end" }}>
-            <Tooltip title="Agregar">
-              <Fab
-                color="success"
-                size="small"
-                onClick={(e) => {
-                  (e.currentTarget as HTMLButtonElement).blur();
-                  setEditState(null);
-                  setModalAbrir(true);
-                }}
-              >
-                <Add />
-              </Fab>
-            </Tooltip>
-          </div>
-        </div>
+      {contratistas && (
+        <>
+          {/* Contratistas */}
+          <div style={{ margin: "5px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                backgroundColor: "#008F9E",
+                marginBottom: "1%",
+                paddingLeft: "3%",
+                paddingRight: "3%",
+                borderRadius: "20px",
+                color: "white",
+              }}
+            >
+              <h2>Contratistas</h2>
+              <div style={{ textAlign: "end" }}>
+                <Tooltip title="Agregar">
+                  <Fab
+                    color="success"
+                    size="small"
+                    onClick={(e) => {
+                      (e.currentTarget as HTMLButtonElement).blur();
+                      setEditState(null);
+                      setModalAbrir(true);
+                    }}
+                  >
+                    <Add />
+                  </Fab>
+                </Tooltip>
+              </div>
+            </div>
 
-        <Paper >
-          <DataGrid
-            rows={contratistas}
-            columns={columns}
-            initialState={{
-              pagination: { paginationModel: paginationModels },
-            }}
-            pageSizeOptions={[5, 10, 50, 100]}
-            onRowSelectionModelChange={handleRowSelection}
-            checkboxSelection={false}
-            sx={{
-              width: "100%",
-              height: "100%",
-              border: 2,
-              borderColor: "#D9D9D9",
-              "& .MuiDataGrid-virtualScroller": { overflow: "auto" },
-            }}
+            <Paper>
+              <DataGrid
+                rows={contratistas}
+                columns={columns}
+                initialState={{
+                  pagination: { paginationModel: paginationModels },
+                }}
+                pageSizeOptions={[5, 10, 50, 100]}
+                onRowSelectionModelChange={handleRowSelection}
+                checkboxSelection={false}
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  border: 2,
+                  borderColor: "#D9D9D9",
+                  "& .MuiDataGrid-virtualScroller": { overflow: "auto" },
+                }}
+              />
+            </Paper>
+          </div>
+
+          {/* Alta - Modificaciones */}
+          <ContratistasForm
+            open={modalAbrir}
+            onClose={() => (setModalAbrir(false), setEditState(null))}
+            editState={editState}
           />
-        </Paper>
-      </div>
-      
-      {/* Alta - Modificaciones */}
-      <ContratistasForm
-        open={modalAbrir}
-        onClose={() => (setModalAbrir(false), setEditState(null))}
-        editState={editState}
-      />
-      {/* Modal Eliminar */}
-      <AlertDialogEliminar open={openDialog} onClose={handleDialogClose} />
+          {/* Modal Eliminar */}
+          <AlertDialogEliminar open={openDialog} onClose={handleDialogClose} />
+        </>
+      )}
     </>
   );
 };

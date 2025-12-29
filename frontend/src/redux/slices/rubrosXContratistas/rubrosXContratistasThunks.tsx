@@ -15,6 +15,17 @@ export const getRubrosXContratistas = () => {
   };
 };
 
+//Vaciar
+export const vaciarRubrosXContratistas = () => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setRubrosXContratistas({ rubrosXContratistas: [] }));
+    } catch (error) {
+      console.error("Error en vaciar:", error);
+    }
+  };
+};
+
 //Get All Habilitados
 export const getRubrosXContratistasHabilitados = () => {
   return async (dispatch: AppDispatch) => {

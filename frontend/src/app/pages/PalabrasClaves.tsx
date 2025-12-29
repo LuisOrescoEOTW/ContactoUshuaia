@@ -1,14 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   deletePalabrasClaves,
-  getPalabrasClaves,
 } from "../../redux/slices/palabrasClaves/palabrasClavesThunks";
-import {
-  DataGrid,
-  type GridColDef,
-} from "@mui/x-data-grid";
+import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { Fab, Paper, Tooltip } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import type { IpalabrasClaves } from "../models/IpalabrasClaves";
@@ -17,6 +13,7 @@ import { PalabrasClavesForm } from "../components/PalabrasClavesForm";
 import AlertDialogEliminar from "../hooks/AlertDialogEliminar";
 
 export const PalabrasClaves = () => {
+
   // Leer
   const dispatch = useDispatch<AppDispatch>();
   const { palabrasClaves = [] } = useSelector(
@@ -24,9 +21,9 @@ export const PalabrasClaves = () => {
   );
 
   // General
-  useEffect(() => {
-    dispatch(getPalabrasClaves());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getPalabrasClaves());
+  // }, [dispatch]);
 
   // Acciones
   const columns: GridColDef[] = [
@@ -106,71 +103,73 @@ export const PalabrasClaves = () => {
   return (
     <>
       {/* Palabras Claves */}
-      <div style={{ margin: "5px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "#008F9E",
-            marginBottom: "1%",
-            paddingLeft: "3%",
-            paddingRight: "3%",
-            borderRadius: "20px",
-            color: "white",
-          }}
-        >
-          <h2>Palabras Claves</h2>
-          <div style={{ textAlign: "end" }}>
-            <Tooltip title="Agregar">
-              <Fab
-                color="success"
-                size="small"
-                onClick={(e) => {
-                  (e.currentTarget as HTMLButtonElement).blur(); // 👈 quita el foco
-                  setEditState(null);
-                  setModalAbrir(true);
+      {palabrasClaves && (
+        <>
+          <div style={{ margin: "5px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                backgroundColor: "#008F9E",
+                marginBottom: "1%",
+                paddingLeft: "3%",
+                paddingRight: "3%",
+                borderRadius: "20px",
+                color: "white",
+              }}
+            >
+              <h2>Palabras Claves</h2>
+              <div style={{ textAlign: "end" }}>
+                <Tooltip title="Agregar">
+                  <Fab
+                    color="success"
+                    size="small"
+                    onClick={(e) => {
+                      (e.currentTarget as HTMLButtonElement).blur(); // 👈 quita el foco
+                      setEditState(null);
+                      setModalAbrir(true);
+                    }}
+                  >
+                    <Add />
+                  </Fab>
+                </Tooltip>
+              </div>
+            </div>
+
+            {/* <Paper sx={{ width: "100%", height: "100%" }}> */}
+            <Paper>
+              <DataGrid
+                rows={palabrasClaves}
+                columns={columns}
+                initialState={{
+                  pagination: { paginationModel: paginationModels },
                 }}
-              >
-                <Add />
-              </Fab>
-            </Tooltip>
+                pageSizeOptions={[5, 10, 50, 100]}
+                checkboxSelection={false}
+                rowSelection={false}
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  border: 2,
+                  borderColor: "#D9D9D9",
+                  "& .MuiDataGrid-virtualScroller": { overflow: "auto" },
+                }}
+              />
+            </Paper>
           </div>
-        </div>
 
-        {/* <Paper sx={{ width: "100%", height: "100%" }}> */}
-        {palabrasClaves && (
-          <Paper>
-            <DataGrid
-              rows={palabrasClaves}
-              columns={columns}
-              initialState={{
-                pagination: { paginationModel: paginationModels },
-              }}
-              pageSizeOptions={[5, 10, 50, 100]}
-              checkboxSelection={false}
-              rowSelection={false}
-              sx={{
-                width: "100%",
-                height: "100%",
-                border: 2,
-                borderColor: "#D9D9D9",
-                "& .MuiDataGrid-virtualScroller": { overflow: "auto" },
-              }}
-            />
-          </Paper>
-        )}
-      </div>
+          {/* Alta - Modificaciones */}
+          <PalabrasClavesForm
+            open={modalAbrir}
+            onClose={() => (setModalAbrir(false), setEditState(null))}
+            editState={editState}
+          />
 
-      {/* Alta - Modificaciones */}
-      <PalabrasClavesForm
-        open={modalAbrir}
-        onClose={() => (setModalAbrir(false), setEditState(null))}
-        editState={editState}
-      />
-
-      {/* Modal Eliminar */}
-      <AlertDialogEliminar open={openDialog} onClose={handleDialogClose} />
+          {/* Modal Eliminar */}
+          <AlertDialogEliminar open={openDialog} onClose={handleDialogClose} />
+        </>
+      )}
     </>
   );
 };

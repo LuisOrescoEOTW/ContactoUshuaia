@@ -1,5 +1,5 @@
 import imagen from "../images/logo.png";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { PrincipalPregFrec } from "./PrincipalPregFrec";
 import { PrincipalCuadroPequeño } from "./PrincipalCuadroPequeño";
@@ -21,20 +21,6 @@ export const Principal = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   //El componente padre carga, los hijos consumen.
-  // const { rubros } = useSelector((s: RootState) => s.rubros);
-  // const { palabrasClaves } = useSelector((s: RootState) => s.palabrasClaves);
-  // useEffect(() => {
-  //   if (!rubros || rubros.length === 0) {
-  //     dispatch(getRubros());
-  //     dispatch(getRubrosXContratistasHabilitados());
-  //   }
-
-  //   if (!palabrasClaves || palabrasClaves.length === 0) {
-  //     dispatch(getPalabrasClaves());
-  //     dispatch(getPalabrasClavesNombresUnicos());
-  //   }
-  // }, []);
-
   useEffect(() => {
     dispatch(getRubros());
     dispatch(getRubrosXContratistasHabilitados());

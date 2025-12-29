@@ -2,15 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import type { Icontratista } from "../models/Icontratista";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { useEffect, useState } from "react";
-import {
-  deleteRubros,
-  getRubros,
-} from "../../redux/slices/rubros/rubrosThunks";
-import {
-  DataGrid,
-  type GridColDef,
-  type GridRowSelectionModel,
-} from "@mui/x-data-grid";
+import { deleteRubros } from "../../redux/slices/rubros/rubrosThunks";
+import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { Fab, Paper, Tooltip } from "@mui/material";
 import { Add, ArrowBack, Delete, Edit } from "@mui/icons-material";
 import type { Irubros } from "../models/Irubros";
@@ -29,6 +22,7 @@ interface Props {
 }
 
 export const Rubros: React.FC<Props> = ({ contratista }) => {
+
   // Leer
   const dispatch = useDispatch<AppDispatch>();
   const { rubros = [] } = useSelector((state: RootState) => state.rubros);
@@ -37,9 +31,9 @@ export const Rubros: React.FC<Props> = ({ contratista }) => {
   );
 
   // General
-  useEffect(() => {
-    dispatch(getRubros());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getRubros());
+  // }, [dispatch]);
 
   // Acciones
   const columns: GridColDef[] = [
@@ -182,75 +176,80 @@ export const Rubros: React.FC<Props> = ({ contratista }) => {
   return (
     <>
       {/* Rubros */}
-      <div style={{ margin: "5px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "#008F9E",
-            marginBottom: "1%",
-            paddingLeft: "3%",
-            paddingRight: "3%",
-            borderRadius: "20px",
-            color: "white",
-          }}
-        >
-          <h2>Rubros</h2>
-          <div style={{ textAlign: "end" }}>
-            <Tooltip title="Agregar">
-              <Fab
-                color="success"
-                size="small"
-                onClick={(e) => {
-                  (e.currentTarget as HTMLButtonElement).blur(); // 👈 quita el foco
-                  setEditState(null);
-                  setModalAbrir(true);
+      {rubros && (
+        <>
+          <div style={{ margin: "5px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                backgroundColor: "#008F9E",
+                marginBottom: "1%",
+                paddingLeft: "3%",
+                paddingRight: "3%",
+                borderRadius: "20px",
+                color: "white",
+              }}
+            >
+              <h2>Rubros</h2>
+              <div style={{ textAlign: "end" }}>
+                <Tooltip title="Agregar">
+                  <Fab
+                    color="success"
+                    size="small"
+                    onClick={(e) => {
+                      (e.currentTarget as HTMLButtonElement).blur(); // 👈 quita el foco
+                      setEditState(null);
+                      setModalAbrir(true);
+                    }}
+                  >
+                    <Add />
+                  </Fab>
+                </Tooltip>
+              </div>
+            </div>
+
+            <Paper>
+              <DataGrid
+                rows={rubros}
+                columns={columns}
+                initialState={{
+                  pagination: { paginationModel: paginationModels },
                 }}
-              >
-                <Add />
-              </Fab>
-            </Tooltip>
+                pageSizeOptions={[5, 10, 50, 100]}
+                // onRowSelectionModelChange={handleRowSelection}
+                checkboxSelection={false}
+                disableRowSelectionOnClick
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  border: 2,
+                  borderColor: "#D9D9D9",
+                  "& .MuiDataGrid-virtualScroller": { overflow: "auto" },
+                }}
+              />
+            </Paper>
           </div>
-        </div>
 
-        <Paper>
-          <DataGrid
-            rows={rubros}
-            columns={columns}
-            initialState={{
-              pagination: { paginationModel: paginationModels },
-            }}
-            pageSizeOptions={[5, 10, 50, 100]}
-            // onRowSelectionModelChange={handleRowSelection}
-            checkboxSelection={false}
-            disableRowSelectionOnClick
-            sx={{
-              width: "100%",
-              height: "100%",
-              border: 2,
-              borderColor: "#D9D9D9",
-              "& .MuiDataGrid-virtualScroller": { overflow: "auto" },
-            }}
+          {/* Alta - Modificaciones */}
+
+          <RubrosForm
+            open={modalAbrir}
+            onClose={() => (setModalAbrir(false), setEditState(null))}
+            editState={editState}
+            contratista={contratista}
           />
-        </Paper>
-      </div>
+          {/* Modal Eliminar */}
+          <AlertDialogEliminar open={openDialog} onClose={handleDialogClose} />
 
-      {/* Alta - Modificaciones */}
-      <RubrosForm
-        open={modalAbrir}
-        onClose={() => (setModalAbrir(false), setEditState(null))}
-        editState={editState}
-        contratista={contratista}
-      />
-      {/* Modal Eliminar */}
-      <AlertDialogEliminar open={openDialog} onClose={handleDialogClose} />
-
-      {/* Modal Agregar */}
-      <AlertDialogAgregar
-        open={openDialogAsignar}
-        onClose={handleDialogCloseAsignar}
-      />
+          {/* Modal Agregar */}
+          <AlertDialogAgregar
+            open={openDialogAsignar}
+            onClose={handleDialogCloseAsignar}
+          />
+        </>
+      )}
     </>
   );
 };
