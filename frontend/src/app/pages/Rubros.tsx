@@ -18,22 +18,15 @@ import AlertDialogAgregar from "../hooks/AlertDialogAgregar";
 
 interface Props {
   contratista: Icontratista | null;
-  // onClose: (value: number | null) => void;
 }
 
 export const Rubros: React.FC<Props> = ({ contratista }) => {
-
   // Leer
   const dispatch = useDispatch<AppDispatch>();
   const { rubros = [] } = useSelector((state: RootState) => state.rubros);
   const { rubrosXContratistas = [] } = useSelector(
     (state: RootState) => state.rubrosXContratistas
   );
-
-  // General
-  // useEffect(() => {
-  //   dispatch(getRubros());
-  // }, [dispatch]);
 
   // Acciones
   const columns: GridColDef[] = [
@@ -233,7 +226,6 @@ export const Rubros: React.FC<Props> = ({ contratista }) => {
           </div>
 
           {/* Alta - Modificaciones */}
-
           <RubrosForm
             open={modalAbrir}
             onClose={() => (setModalAbrir(false), setEditState(null))}

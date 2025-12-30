@@ -174,7 +174,6 @@ export const RubrosXContratistas: React.FC<Props> = ({ contratista }) => {
           <h2>Rubros X Contratista</h2>
         </div>
 
-        {/* <Paper sx={{ width: "100%", height: "100%" }}> */}
         {rubrosXContratistas && (
           <Paper>
             <DataGrid

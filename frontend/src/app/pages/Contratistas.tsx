@@ -1,9 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { useState } from "react";
-import {
-  deleteContratistas,
-} from "../../redux/slices/contratistas/contratistasThunks";
+import { deleteContratistas } from "../../redux/slices/contratistas/contratistasThunks";
 import {
   DataGrid,
   type GridColDef,
@@ -20,19 +18,11 @@ interface Props {
   contratistaSelect: (value: Icontratista | null) => void;
 }
 export const Contratistas: React.FC<Props> = ({ contratistaSelect }) => {
-
   const dispatch = useDispatch<AppDispatch>();
-  const contratistas = useSelector((state: RootState) => state.contratistas.contratistas);
+  const contratistas = useSelector(
+    (state: RootState) => state.contratistas.contratistas
+  );
 
-  // Leer
-  // const { contratistas = [] } = useSelector((state: RootState) => state.contratistas);
-
-  // General
-  // useEffect(() => {
-  //   dispatch(getContratistas());
-  // }, [dispatch]);
-
-  //
   const columns: GridColDef[] = [
     { field: "id", headerName: "Id", flex: 0.2 },
     { field: "nombreApellido", headerName: "Nombre y Apellido", flex: 1 },

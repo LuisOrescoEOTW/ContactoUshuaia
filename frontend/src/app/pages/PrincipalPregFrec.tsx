@@ -1,19 +1,12 @@
 import { Card, CardActionArea, CardContent, Typography } from "@mui/material";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../../redux/store";
-import { getPreguntas } from "../../redux/slices/preguntasFrecuentes/preguntasFrecuentesThunks";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../redux/store";
 import type { IpreguntasFrecuentes } from "../models/IpreguntasFrecuentes";
 
 export const PrincipalPregFrec = () => {
-
-  //Leer datos iniciales
-  const dispatch = useDispatch<AppDispatch>();
-  useEffect(() => {
-    dispatch(getPreguntas());
-  }, [dispatch]);
-
-  const { preguntas = [] } = useSelector((state: RootState) => state.preguntasFrecuentes);
+  const { preguntas = [] } = useSelector(
+    (state: RootState) => state.preguntasFrecuentes
+  );
 
   return (
     <>

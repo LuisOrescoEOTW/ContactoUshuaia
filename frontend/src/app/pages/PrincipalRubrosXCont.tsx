@@ -33,7 +33,7 @@ export const PrincipalRubrosXCont = () => {
         (item) => item.rubrosId === rubro.id
       );
 
-      //Ordenrar por Nombre Ascendente
+      //Ordenar por Nombre Ascendente
       contratistasDeRubro.sort((a, b) => {
         if (
           (a.contratistas?.nombreApellido ?? "") <
@@ -163,23 +163,8 @@ export const PrincipalRubrosXCont = () => {
                             flexShrink: 0,
                           }}
                         />
-                        {/* <Box
-                          component="img"
-                          src="../src/app/images/whatsappIcon.png"
-                          sx={{
-                            width: {
-                              xs: 30,
-                              md: 60,
-                            },
-                            height: "auto",
-                            cursor: "pointer",
-                          }}
-                        /> */}
-                        <WhatsAppLink
-                          phoneNumber={item.contratistas?.telefono || "-"}
-                        />
+                        <WhatsAppLink phoneNumber={item.contratistas?.telefono || "-"} />
                       </Stack>
-                      {/* <CardContent sx={{ flex: 1 }}> */}
                       <CardContent
                         sx={{
                           flexGrow: 1,

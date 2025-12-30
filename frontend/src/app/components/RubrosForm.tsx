@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import type { Irubros } from "../models/Irubros";
 import { Controller, useForm } from "react-hook-form";
 import { postRubros, putRubros } from "../../redux/slices/rubros/rubrosThunks";

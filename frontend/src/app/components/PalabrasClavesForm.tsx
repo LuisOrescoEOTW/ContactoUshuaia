@@ -18,7 +18,6 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { getRubros } from "../../redux/slices/rubros/rubrosThunks";
 
 interface Props {
   open: boolean;
@@ -32,19 +31,12 @@ export const PalabrasClavesForm: React.FC<Props> = ({
   editState,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { rubros = [] } = useSelector((state: RootState) => state.rubros);
-
-  // Cargar rubros al abrir el modal
-  useEffect(() => {
-    dispatch(getRubros());
-  }, [dispatch]);
+  const rubros = useSelector((state: RootState) => state.rubros.rubros);
 
   // Valores iniciales del formulario
   const inicialState = {
-    // id: 0,
     nombre: "",
     rubrosId: 1,
-    // deleted: false,
   };
 
   const {
@@ -73,8 +65,8 @@ export const PalabrasClavesForm: React.FC<Props> = ({
     if (editState) {
       delete data.rubros;
       dispatch(putPalabrasClaves(data))
-      .then(() => toast.info("Elemento modificado"))
-      .catch(() => toast.error("Error al modificar el elemento"));
+        .then(() => toast.info("Elemento modificado"))
+        .catch(() => toast.error("Error al modificar el elemento"));
     } else {
       dispatch(postPalabrasClaves(data))
         .then(() => toast.success("Elemento agregado"))

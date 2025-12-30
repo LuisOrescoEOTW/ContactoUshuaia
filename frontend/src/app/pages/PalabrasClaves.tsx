@@ -1,9 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { useState } from "react";
-import {
-  deletePalabrasClaves,
-} from "../../redux/slices/palabrasClaves/palabrasClavesThunks";
+import { deletePalabrasClaves } from "../../redux/slices/palabrasClaves/palabrasClavesThunks";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { Fab, Paper, Tooltip } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
@@ -13,17 +11,11 @@ import { PalabrasClavesForm } from "../components/PalabrasClavesForm";
 import AlertDialogEliminar from "../hooks/AlertDialogEliminar";
 
 export const PalabrasClaves = () => {
-
   // Leer
   const dispatch = useDispatch<AppDispatch>();
   const { palabrasClaves = [] } = useSelector(
     (state: RootState) => state.palabrasClaves
   );
-
-  // General
-  // useEffect(() => {
-  //   dispatch(getPalabrasClaves());
-  // }, [dispatch]);
 
   // Acciones
   const columns: GridColDef[] = [
@@ -137,7 +129,6 @@ export const PalabrasClaves = () => {
               </div>
             </div>
 
-            {/* <Paper sx={{ width: "100%", height: "100%" }}> */}
             <Paper>
               <DataGrid
                 rows={palabrasClaves}

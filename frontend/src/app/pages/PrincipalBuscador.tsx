@@ -3,7 +3,6 @@ import { Box } from "@mui/system";
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";
-import type { IpalabrasClaves } from "../models/IpalabrasClaves";
 
 export const PrincipalBuscador = () => {
   const rubros = useSelector((state: RootState) => state.rubros.rubros);
@@ -17,15 +16,6 @@ export const PrincipalBuscador = () => {
   );
 
   const [searchValue, setSearchValue] = useState("");
-
-  // 🔹 Filtrado reactivo de palabras clave (objetos)
-  // const pcEncontrado: IpalabrasClaves[] = useMemo(() => {
-  //   if (!searchValue.trim()) return [];
-
-  //   return palabrasClaves.filter((pc) =>
-  //     pc.nombre.toLowerCase().includes(searchValue.toLowerCase())
-  //   );
-  // }, [searchValue, palabrasClaves]);
 
   const rubrosEncontrados = useMemo(() => {
     if (!searchValue.trim()) return [];

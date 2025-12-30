@@ -15,6 +15,7 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
+  Typography,
 } from "@mui/material";
 
 interface Props {
@@ -124,6 +125,11 @@ export const ContratistasForm: React.FC<Props> = ({
             />
           )}
         />
+        <Typography variant="body2" color="textSecondary">
+          Ingrese teléfono en formato sin 0 y sin 15.
+          Ejemplo: 2901 123456
+          Puede dejar espacio o guiones o nada entre los números.
+        </Typography>
         <Controller
           name="email"
           control={control}

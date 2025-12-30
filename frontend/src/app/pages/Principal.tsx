@@ -15,6 +15,7 @@ import {
   getPalabrasClaves,
   getPalabrasClavesNombresUnicos,
 } from "../../redux/slices/palabrasClaves/palabrasClavesThunks";
+import { getPreguntas } from "../../redux/slices/preguntasFrecuentes/preguntasFrecuentesThunks";
 
 export const Principal = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ export const Principal = () => {
     dispatch(getRubrosXContratistasHabilitados());
     dispatch(getPalabrasClaves());
     dispatch(getPalabrasClavesNombresUnicos());
+    dispatch(getPreguntas());
   }, []);
 
   return (
@@ -125,10 +127,7 @@ export const Principal = () => {
           >
             Volver al inicio
           </Typography>
-          {/* <Button variant="contained" color="success"> */}
-          {/* </Button> */}
         </a>
-
         <a
           style={{ textAlign: "right", cursor: "pointer" }}
           onClick={() => navigate("/admin")}

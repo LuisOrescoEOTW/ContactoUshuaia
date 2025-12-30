@@ -1,9 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { useState } from "react";
-import {
-  deletePreguntas,
-} from "../../redux/slices/preguntasFrecuentes/preguntasFrecuentesThunks";
+import { deletePreguntas } from "../../redux/slices/preguntasFrecuentes/preguntasFrecuentesThunks";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { Fab, Paper, Tooltip } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
@@ -13,17 +11,11 @@ import { PreguntasFrecuentesForm } from "../components/PreguntasFrecuentesForm";
 import AlertDialogEliminar from "../hooks/AlertDialogEliminar";
 
 export const PreguntasFrecuentes = () => {
-
   // Leer
   const dispatch = useDispatch<AppDispatch>();
   const { preguntas = [] } = useSelector(
     (state: RootState) => state.preguntasFrecuentes
   );
-
-  // General
-  // useEffect(() => {
-  //   dispatch(getPreguntas());
-  // }, [dispatch]);
 
   // Acciones
   const columns: GridColDef[] = [
