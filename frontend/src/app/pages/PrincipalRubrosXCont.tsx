@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";
 import { useMemo, useState } from "react";
 import type { IrubroXContratista } from "../models/IrubroXContratista";
+import { WhatsAppLink } from "./WhatsAppLink";
 
 export const PrincipalRubrosXCont = () => {
   const { rubrosXContratistas = [] } = useSelector(
@@ -151,17 +152,33 @@ export const PrincipalRubrosXCont = () => {
                     sx={{ mb: 2, borderRadius: 3, pl: 2, pr: 2 }}
                   >
                     <Stack direction="row" alignItems="center" spacing={1}>
-                      <Person
-                        sx={{
-                          color: "primary.main",
-                          fontSize: {
-                            xs: 30,
-                            md: 60,
-                          },
-                          flexShrink: 0,
-                        }}
-                      />
-
+                      <Stack direction="column" alignItems="center" spacing={1}>
+                        <Person
+                          sx={{
+                            color: "primary.main",
+                            fontSize: {
+                              xs: 30,
+                              md: 60,
+                            },
+                            flexShrink: 0,
+                          }}
+                        />
+                        {/* <Box
+                          component="img"
+                          src="../src/app/images/whatsappIcon.png"
+                          sx={{
+                            width: {
+                              xs: 30,
+                              md: 60,
+                            },
+                            height: "auto",
+                            cursor: "pointer",
+                          }}
+                        /> */}
+                        <WhatsAppLink
+                          phoneNumber={item.contratistas?.telefono || "-"}
+                        />
+                      </Stack>
                       {/* <CardContent sx={{ flex: 1 }}> */}
                       <CardContent
                         sx={{
