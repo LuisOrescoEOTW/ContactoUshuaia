@@ -1,9 +1,5 @@
 # React + TypeScript + Vite
 
-# EN authGuard.tsx cambiar el correo por el otorgado
-# lhorescovich@gmail.com
-# Lhoo5715
-
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
