@@ -3,6 +3,10 @@ import { Box } from "@mui/system";
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";
+import buscarImg from '../images/buscar.png';
+
+// Import dinámico para iconos de rubros
+const iconos = import.meta.glob('../images/iconos/*.png', { eager: true, import: 'default' }) as Record<string, string>;
 
 export const PrincipalBuscador = () => {
   const rubros = useSelector((state: RootState) => state.rubros.rubros);
@@ -108,7 +112,7 @@ export const PrincipalBuscador = () => {
             onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
           >
             <img
-              src="../src/app/images/buscar.png"
+              src={buscarImg}
               alt="Buscar"
               style={{
                 height: "45px",
@@ -148,7 +152,7 @@ export const PrincipalBuscador = () => {
               <Box key={rubro.id} sx={{ textAlign: "center" }}>
                 <a href={"#" + rubro.nombre}>
                   <img
-                    src={`../src/app/images/iconos/${rubro.icono}`}
+                    src={iconos[`../images/iconos/${rubro.icono}`]}
                     alt={rubro.nombre}
                     style={{ width: 60, height: 60 }}
                   />
@@ -181,7 +185,7 @@ export const PrincipalBuscador = () => {
               >
                 <a href={"#" + rubro.nombre}>
                   <img
-                    src={`../src/app/images/iconos/${rubro.icono}`}
+                    src={iconos[`../images/iconos/${rubro.icono}`]}
                     alt={rubro.nombre}
                     style={{ width: 60, height: 60 }}
                   />

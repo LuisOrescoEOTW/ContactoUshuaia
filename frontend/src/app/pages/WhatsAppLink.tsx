@@ -1,5 +1,6 @@
 import React from "react";
 import { Box } from "@mui/system";
+import whatsappIcon from '../images/whatsappIcon.png';
 
 interface Props {
   phoneNumber: string; // Número de teléfono en formato sin 0 y sin 15
@@ -32,7 +33,7 @@ export const WhatsAppLink: React.FC<Props> = ({ phoneNumber }) => {
     >
       <Box
         component="img"
-        src="../src/app/images/whatsappIcon.png"
+        src={whatsappIcon}
         sx={{
           width: {
             xs: 30,

@@ -8,6 +8,9 @@ import { useMemo, useState } from "react";
 import type { IrubroXContratista } from "../models/IrubroXContratista";
 import { WhatsAppLink } from "./WhatsAppLink";
 
+// Import dinámico para iconos de rubros
+const iconos = import.meta.glob('../images/iconos/*.png', { eager: true, import: 'default' }) as Record<string, string>;
+
 export const PrincipalRubrosXCont = () => {
   const { rubrosXContratistas = [] } = useSelector(
     (state: RootState) => state.rubrosXContratistas
@@ -84,7 +87,7 @@ export const PrincipalRubrosXCont = () => {
               <Box sx={{ display: "flex", alignItems: "left", gap: 2 }}>
                 <img
                   id={rubro.nombre}
-                  src={`../src/app/images/iconos/${rubro?.icono}`}
+                  src={iconos[`../images/iconos/${rubro.icono}`]}
                   alt={rubro?.nombre}
                   style={{
                     height: "100px",
