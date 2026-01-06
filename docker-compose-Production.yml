@@ -1,3 +1,5 @@
+# Docker Compose para producción
+# Cambiar el nombre: mv docker-compose-Production.yml docker-compose.yml
 version: '3.8'
 
 services:
@@ -5,10 +7,6 @@ services:
     # 🚨 CAMBIO CLAVE: Usamos la imagen ya construida de Docker Hub
     image: orescosoft/contactoushuaia-backend:latest
     container_name: contacto-backend
-    
-    # ❌ QUITADO: Ya no necesitamos 'build'
-    # ❌ QUITADO: Ya no necesitamos 'volumes' si solo vas a correr la aplicación
-    #            (A menos que necesites persistencia de datos)
     
     ports:
       - "8000:8000"  # Puerto expuesto en la VM. Accedido por el frontend y/o NGINX.
@@ -21,9 +19,6 @@ services:
     image: orescosoft/contactoushuaia-frontend:latest
     container_name: contacto-frontend
 
-    # ❌ QUITADO: Ya no necesitamos 'build'
-    # ❌ QUITADO: Ya no necesitamos 'volumes'
-    
     ports:
       - "8080:80"  # Mapea el puerto 80 interno del contenedor al 8080 de la VM.
     depends_on:
