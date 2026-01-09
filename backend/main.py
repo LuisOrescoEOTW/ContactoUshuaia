@@ -6,11 +6,34 @@ from database import SessionLocal
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
+# ... (tus imports existentes)
+from fastapi import FastAPI, Depends, HTTPException, status, BackgroundTasks 
+from pydantic import BaseModel, EmailStr 
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig # <== ¡Nuevo!
+
+from dotenv import load_dotenv
 
 load_dotenv()  # Carga las variables del archivo .env
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 FRONTEND_URL = os.getenv("FRONTEND_URL")
+
+# === CONFIGURACIÓN DE CORREO (Usando Variables de Entorno) ===
+MAIL_USERNAME = os.getenv("MAIL_USERNAME")
+MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
+MAIL_SERVER = os.getenv("MAIL_SERVER")
+MAIL_PORT = int(os.getenv("MAIL_PORT", 587)) # Asegura que sea un entero, default 587
+
+conf = ConnectionConfig(
+    MAIL_USERNAME=MAIL_USERNAME,
+    MAIL_PASSWORD=MAIL_PASSWORD,
+    MAIL_FROM=MAIL_USERNAME,         # El remitente será la misma cuenta de usuario
+    MAIL_PORT=MAIL_PORT,
+    MAIL_SERVER=MAIL_SERVER,
+    MAIL_STARTTLS=True,             # Estándar para la mayoría de SMTPs
+    MAIL_SSL_TLS=False,
+    USE_CREDENTIALS=True
+)
 
 # ==== Inicialización FastAPI ====
 app = FastAPI()
@@ -38,6 +61,8 @@ contratista_crud = CRUDBase(models.Contratistas)
 rubroxcontratista_crud = CRUDBase(models.RubrosXContratistas)
 palabra_clave_crud = CRUDBase(models.PalabrasClaves)
 preguntas_crud = CRUDBase(models.PreguntasFrecuentes)
+aviso_crud = CRUDBase(models.Aviso)
+puntuar_crud = CRUDBase(models.Puntuar)
 
 # ==== ENDPOINTS RUBROS ====
 @app.get("/Rubros/", response_model=list[schemas.Rubros])
@@ -155,3 +180,89 @@ def actualizarPreguntasFrecuentes(pregunta_id: int, registro: schemas.PreguntasF
 @app.delete("/PreguntasFrecuentes/{pregunta_id}")
 def borrarPreguntasFrecuentes(pregunta_id: int, db: Session = Depends(get_db)):
     return preguntas_crud.logical_delete(db, pregunta_id)
+
+# ==== ENDPOINTS AVISO ====
+@app.get("/Aviso/", response_model=list[schemas.Aviso])
+def listarAviso(db: Session = Depends(get_db)):
+    return db.query(models.Aviso).filter(models.Aviso.deleted == False).order_by(models.Aviso.email).all()
+
+@app.get("/Aviso/{aviso_id}", response_model=schemas.Aviso)
+def listarAvisoById(aviso_id: int, db: Session = Depends(get_db)):
+    return aviso_crud.get_by_id(db, aviso_id)
+
+@app.post("/Aviso/")
+def crearAviso(registro: schemas.Aviso, db: Session = Depends(get_db)):
+    return aviso_crud.create(db, registro)
+
+@app.put("/Aviso/{aviso_id}")
+def actualizarAviso(aviso_id: int, registro: schemas.Aviso, db: Session = Depends(get_db)):
+    return aviso_crud.update(db, aviso_id, registro)
+
+@app.delete("/Aviso/{aviso_id}")
+def borrarAviso(aviso_id: int, db: Session = Depends(get_db)):
+    return aviso_crud.logical_delete(db, aviso_id)
+
+# ==== ENDPOINTS PUNTUAR ====
+@app.get("/Puntuar/", response_model=list[schemas.Puntuar])
+def listarPuntuar(db: Session = Depends(get_db)):
+    return db.query(models.Puntuar).filter(models.Puntuar.deleted == False).order_by(models.Puntuar.id).all()
+
+@app.get("/Puntuar/{puntuar_id}", response_model=schemas.Puntuar)
+def listarPuntuarById(puntuar_id: int, db: Session = Depends(get_db)):
+    return puntuar_crud.get_by_id(db, puntuar_id)
+
+@app.post("/Puntuar/")
+def crearPuntuar(registro: schemas.Puntuar, db: Session = Depends(get_db)):
+    return puntuar_crud.create(db, registro)
+
+@app.put("/Puntuar/{puntuar_id}")
+def actualizarPuntuar(puntuar_id: int, registro: schemas.Puntuar, db: Session = Depends(get_db)):
+    return puntuar_crud.update(db, puntuar_id, registro)
+
+@app.delete("/Puntuar/{puntuar_id}")
+def borrarPuntuar(puntuar_id: int, db: Session = Depends(get_db)):
+    return puntuar_crud.logical_delete(db, puntuar_id)
+
+@app.delete("/Puntuar/Fisico/{puntuar_id}")
+def borrarPuntuarFisico(puntuar_id: int, db: Session = Depends(get_db)):
+    return puntuar_crud.delete(db, puntuar_id)
+
+
+# ==== ENDPOINTS ENVÍO DE CORREO DE AVISO ====
+@app.post("/EnviarAviso/")
+async def enviar_correo_aviso(registro: schemas.Aviso, background_tasks: BackgroundTasks):
+    """
+    Envía un correo de aviso simple a la dirección proporcionada.
+    Se ejecuta en tareas de fondo para no bloquear la respuesta HTTP.
+    """
+    
+    # Contenido HTML simple
+    html_content = f"""
+    <html>
+        <body>
+            <h3>Generación Automática de Aviso</h3>
+            <p>Estimado/a <strong>{registro.nombre}</strong>,</p>
+            <p>Le informamos que cuenta con una nueva puntuación pendiente de aprobación.</p>
+            <p>Por favor, ingrese en Admin de la aplicación Contacto Ushuaia para más detalles.</p>
+            <br>
+            <p>Saludos cordiales.</p>
+        </body>
+    </html>
+    """
+    
+    # Estructura del mensaje de correo
+    message = MessageSchema(
+        subject="Notificación Contacto Ushuaia",
+        recipients=[registro.email], # Espera una lista, aunque solo sea un destinatario
+        body=html_content,
+        subtype="html"
+    )
+
+    # Cliente de correo
+    fm = FastMail(conf)
+    
+    # Agrega la tarea de envío al pool de tareas de fondo
+    # Esto asegura que la respuesta sea rápida.
+    background_tasks.add_task(fm.send_message, message)
+
+    return {"message": f"Aviso para {registro.nombre} en cola para ser enviado a {registro.email}"}

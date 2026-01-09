@@ -34,3 +34,9 @@ class CRUDBase:
         obj.deleted = True
         db.commit()
         return {"message": "Eliminado lógicamente"}
+    
+    def delete(self, db: Session, id: int):
+        obj = self.get_by_id(db, id)
+        db.delete(obj)
+        db.commit()
+        return {"message": "Eliminado permanentemente"}

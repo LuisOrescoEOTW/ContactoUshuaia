@@ -36,7 +36,7 @@ export const RubrosXContratistas: React.FC<Props> = ({ contratista }) => {
 
   // Acciones
   const columns: GridColDef[] = [
-    { field: "id", headerName: "Id", flex: 0.1 },
+    // { field: "id", headerName: "Id", flex: 0.1 },
     {
       field: "rubros",
       headerName: "Rubro",

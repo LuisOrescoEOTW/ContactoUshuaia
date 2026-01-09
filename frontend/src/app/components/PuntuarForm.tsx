@@ -1,7 +1,6 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { IrubroXContratista } from "../models/IrubroXContratista";
-import type { AppDispatch } from "../../redux/store";
-import { putRubrosXContratistasRefresh } from "../../redux/slices/rubrosXContratistas/rubrosXContratistasThunks";
+import type { AppDispatch, RootState } from "../../redux/store";
 import { toast } from "react-toastify";
 import {
   Button,
@@ -16,8 +15,13 @@ import {
   Rating,
   Typography,
   Box,
+  TextField,
 } from "@mui/material";
 import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { postPuntajes } from "../../redux/slices/Puntuar/puntuarThunks";
+import type { Ipuntuar } from "../models/Ipuntuar";
+import { postEnviarAviso } from "../../redux/slices/Aviso/avisoThunks";
 
 interface Props {
   open: boolean;
@@ -29,8 +33,9 @@ interface Pregunta {
   texto: string;
 }
 
-export const Puntuar: React.FC<Props> = ({ open, onClose, editState }) => {
+export const PuntuarForm: React.FC<Props> = ({ open, onClose, editState }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { avisos = [] } = useSelector((state: RootState) => state.avisos);
 
   const preguntas: Pregunta[] = [
     { id: 1, texto: "Sobre el contratista:" },
@@ -41,6 +46,20 @@ export const Puntuar: React.FC<Props> = ({ open, onClose, editState }) => {
     { id: 6, texto: "¿Cumple el objetivo?" },
     { id: 7, texto: "¿Está conforme?" },
   ];
+
+  // Hook useForm
+  const inicialState = {
+    usuario: "",
+    puntaje: 0,
+    rubrosXcontratistasId: 1,
+    deleted: false,
+  };
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Ipuntuar>({ defaultValues: inicialState });
 
   // Estado: una respuesta por pregunta (por ejemplo ["si", "no", "aveces", ...])
   const [respuestas, setRespuestas] = useState<string[]>(
@@ -63,25 +82,21 @@ export const Puntuar: React.FC<Props> = ({ open, onClose, editState }) => {
     setTotal(suma);
   };
 
-  // Actualizar
-  const onSubmit = () => {
-    const data = {
-      ...editState,
-      sumatoriaPuntuados: editState?.sumatoriaPuntuados
-        ? editState?.sumatoriaPuntuados + total
-        : total,
-      cantidadPuntuados: editState?.cantidadPuntuados
-        ? editState?.cantidadPuntuados + 1
-        : 1,
+  // Guardar
+  const onSubmit = (data: Ipuntuar) => {
+    const objeto = {
+      ...data,
+      puntaje: total,
+      rubrosXcontratistasId: editState ? editState.id : 1,
     };
-    delete data.contratistas;
-    delete data.rubros;
-    dispatch(putRubrosXContratistasRefresh(data))
+    dispatch(postPuntajes(objeto))
       .then(() => {
-        toast.success("Actualización con 3ra puntuación");
+        //Enviar Correo de notificación
+        dispatch(postEnviarAviso(avisos[0]));
+        toast.success("Puntuación enviada para aprobación");
         onClose();
       })
-      .catch(() => toast.error("Error al modificar el elemento"));
+      .catch(() => toast.error("Error al enviar la puntuación"));
   };
 
   return (
@@ -98,12 +113,31 @@ export const Puntuar: React.FC<Props> = ({ open, onClose, editState }) => {
               fontSize: "30px",
             }}
           >
-            Puntuar Contratista
+            Puntuar a {editState.contratistas?.nombreApellido}
           </DialogTitle>
 
           <DialogContent>
-            <Typography variant="h5" fontWeight="bold" gutterBottom>
+            {/* <Typography variant="h5" fontWeight="bold" gutterBottom>
               {editState.contratistas?.nombreApellido}
+            </Typography> */}
+            <Controller
+              name="usuario"
+              control={control}
+              rules={{ required: "El nombre y apellido es obligatorio" }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  margin="dense"
+                  label="Nombre y Apellido"
+                  fullWidth
+                  error={!!errors.usuario}
+                  helperText={errors.usuario?.message}
+                />
+              )}
+            />
+            <Typography variant="body2" color="textSecondary">
+              Es necesario para evaluar la puntuación. No será publicado su
+              Nombre en el portal.
             </Typography>
 
             {preguntas.map((p, index) => (
@@ -194,7 +228,11 @@ export const Puntuar: React.FC<Props> = ({ open, onClose, editState }) => {
             <Button onClick={onClose} variant="contained" color="error">
               Cancelar
             </Button>
-            <Button onClick={onSubmit} variant="contained" color="success">
+            <Button
+              onClick={handleSubmit(onSubmit)}
+              variant="contained"
+              color="success"
+            >
               Enviar
             </Button>
           </DialogActions>

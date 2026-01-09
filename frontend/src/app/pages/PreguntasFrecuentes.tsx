@@ -19,7 +19,7 @@ export const PreguntasFrecuentes = () => {
 
   // Acciones
   const columns: GridColDef[] = [
-    { field: "id", headerName: "Id", flex: 0.2 },
+    // { field: "id", headerName: "Id", flex: 0.2 },
     { field: "pregunta", headerName: "Pregunta", flex: 1 },
     { field: "respuesta", headerName: "Respuesta", flex: 1 },
 

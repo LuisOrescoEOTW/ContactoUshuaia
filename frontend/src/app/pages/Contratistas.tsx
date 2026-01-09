@@ -24,7 +24,7 @@ export const Contratistas: React.FC<Props> = ({ contratistaSelect }) => {
   );
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "Id", flex: 0.2 },
+    // { field: "id", headerName: "Id", flex: 0.2 },
     { field: "nombreApellido", headerName: "Nombre y Apellido", flex: 1 },
     {
       field: "acciones",

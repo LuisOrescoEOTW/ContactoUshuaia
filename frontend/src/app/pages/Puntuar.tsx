@@ -1,32 +1,45 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
-import { useState } from "react";
-import { deletePalabrasClaves } from "../../redux/slices/palabrasClaves/palabrasClavesThunks";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { Fab, Paper, Tooltip } from "@mui/material";
-import { Add, Delete, Edit } from "@mui/icons-material";
-import type { IpalabrasClaves } from "../models/IpalabrasClaves";
+import { Cancel, CheckCircle } from "@mui/icons-material";
+import { useState } from "react";
+import { deletePuntajesFisico } from "../../redux/slices/Puntuar/puntuarThunks";
 import { toast } from "react-toastify";
-import { PalabrasClavesForm } from "../components/PalabrasClavesForm";
+import type { Ipuntuar } from "../models/Ipuntuar";
+import AlertDialogAgregar from "../hooks/AlertDialogAgregar";
 import AlertDialogEliminar from "../hooks/AlertDialogEliminar";
+import { putRubrosXContratistasSinRefresh } from "../../redux/slices/rubrosXContratistas/rubrosXContratistasThunks";
 
-export const PalabrasClaves = () => {
+export const Puntuar = () => {
   // Leer
   const dispatch = useDispatch<AppDispatch>();
-  const { palabrasClaves = [] } = useSelector(
-    (state: RootState) => state.palabrasClaves
-  );
+  const { puntajes = [] } = useSelector((state: RootState) => state.puntuar);
 
   // Acciones
   const columns: GridColDef[] = [
-    // { field: "id", headerName: "Id", flex: 0.2 },
-    { field: "nombre", headerName: "Nombre", flex: 1 },
     {
-      field: "rubros",
+      field: "rubrosXcontratistas.rubros",
       headerName: "Rubro",
-      flex: 1,
-      renderCell: (params) => <>{params.row?.rubros?.nombre ?? "Sin rubro"}</>,
+      flex: 0.8,
+      renderCell: (params) => (
+        <>{params.row?.rubrosXcontratistas?.rubros?.nombre ?? "Sin rubro"}</>
+      ),
     },
+    {
+      field: "rubrosXcontratistas.contratistas",
+      headerName: "Contratista",
+      flex: 1,
+      renderCell: (params) => (
+        <>
+          {params.row?.rubrosXcontratistas?.contratistas?.nombreApellido ??
+            "Sin contratista"}
+        </>
+      ),
+    },
+    { field: "usuario", headerName: "Usuario", flex: 1 },
+    { field: "puntaje", headerName: "Puntaje", flex: 0.5 },
+
     {
       field: "acciones",
       headerName: "Acciones",
@@ -37,23 +50,24 @@ export const PalabrasClaves = () => {
         <div
           style={{
             display: "flex",
-            gap: "8px",
+            gap: "9px",
             justifyContent: "center",
             alignItems: "center",
             height: "100%",
           }}
         >
-          <Tooltip title="Editar">
+          <Tooltip title="Aprobar">
             <Fab
               size="small"
-              color="primary"
+              color="success"
               onClick={(e) => {
                 (e.currentTarget as HTMLButtonElement).blur();
+                setDeleteId(params.row.id);
                 setEditState(params.row);
-                setModalAbrir(true);
+                setOpenDialogAprobar(true);
               }}
             >
-              <Edit fontSize="small" />
+              <CheckCircle fontSize="small" />
             </Fab>
           </Tooltip>
           <Tooltip title="Eliminar">
@@ -66,7 +80,7 @@ export const PalabrasClaves = () => {
                 setOpenDialog(true);
               }}
             >
-              <Delete fontSize="small" />
+              <Cancel fontSize="small" />
             </Fab>
           </Tooltip>
         </div>
@@ -75,16 +89,16 @@ export const PalabrasClaves = () => {
   ];
   const paginationModels = { page: 0, pageSize: 5 };
 
-  // Agregar - Modificar
-  const [modalAbrir, setModalAbrir] = useState(false);
-  const [editState, setEditState] = useState<IpalabrasClaves | null>(null);
-
-  //Borrar
+  // Agregar - Borrar
   const [deleteId, setDeleteId] = useState<number | null>(null); // ID a eliminar
+  const [editState, setEditState] = useState<Ipuntuar | null>(null);
+
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDialogAprobar, setOpenDialogAprobar] = useState(false);
+
   const handleDialogClose = (confirmDelete: boolean) => {
     if (confirmDelete && deleteId !== null) {
-      dispatch(deletePalabrasClaves(deleteId))
+      dispatch(deletePuntajesFisico(deleteId))
         .then(() => toast.error("Elemento eliminado"))
         .catch(() => toast.error("Error al eliminar el elemento"));
     }
@@ -92,10 +106,39 @@ export const PalabrasClaves = () => {
     setOpenDialog(false);
   };
 
+  const handleDialogCloseAprobar = (confirm: boolean) => {
+    if (confirm && deleteId !== null && editState !== null) {
+        const objetoRubroXContratista = {
+          id: editState.rubrosXcontratistasId,
+          rubrosId: editState.rubrosXcontratistas?.rubrosId,
+          contratistasId: editState.rubrosXcontratistas?.contratistasId,
+          cantidadPuntuados:
+            (editState.rubrosXcontratistas?.cantidadPuntuados ?? 0) + 1,
+          sumatoriaPuntuados:
+            (editState.rubrosXcontratistas?.sumatoriaPuntuados ?? 0) +
+            editState.puntaje,
+          habilitado: editState.rubrosXcontratistas?.habilitado,
+          deleted: editState.rubrosXcontratistas?.deleted,
+        };
+        // Modificar la tabla rubrosXcontratistas
+        dispatch(putRubrosXContratistasSinRefresh(objetoRubroXContratista))
+          .then(() => {
+            toast.success("Puntaje aprobado y actualizado");
+            // Eliminar el puntaje aprobado
+            dispatch(deletePuntajesFisico(deleteId))
+              .then(() => toast.info("Eliminado después de aprobar"))
+              .catch(() => toast.error("Error al eliminar el puntaje aprobado"));
+          })
+          .catch(() => toast.error("Error al actualizar rubroXcontratista"));
+    }
+    setDeleteId(null);
+    setOpenDialogAprobar(false);
+  };
+
   return (
     <>
-      {/* Palabras Claves */}
-      {palabrasClaves && (
+      {/* Puntuar */}
+      {puntajes && (
         <>
           <div style={{ margin: "5px" }}>
             <div
@@ -111,27 +154,13 @@ export const PalabrasClaves = () => {
                 color: "white",
               }}
             >
-              <h2>Palabras Claves</h2>
-              <div style={{ textAlign: "end" }}>
-                <Tooltip title="Agregar">
-                  <Fab
-                    color="success"
-                    size="small"
-                    onClick={(e) => {
-                      (e.currentTarget as HTMLButtonElement).blur(); // 👈 quita el foco
-                      setEditState(null);
-                      setModalAbrir(true);
-                    }}
-                  >
-                    <Add />
-                  </Fab>
-                </Tooltip>
-              </div>
+              <h2>Puntuar</h2>
             </div>
 
+            {/* <Paper sx={{ width: "100%", height: "100%" }}> */}
             <Paper>
               <DataGrid
-                rows={palabrasClaves}
+                rows={puntajes}
                 columns={columns}
                 initialState={{
                   pagination: { paginationModel: paginationModels },
@@ -150,11 +179,10 @@ export const PalabrasClaves = () => {
             </Paper>
           </div>
 
-          {/* Alta - Modificaciones */}
-          <PalabrasClavesForm
-            open={modalAbrir}
-            onClose={() => (setModalAbrir(false), setEditState(null))}
-            editState={editState}
+          {/* Aprobar */}
+          <AlertDialogAgregar
+            open={openDialogAprobar}
+            onClose={handleDialogCloseAprobar}
           />
 
           {/* Modal Eliminar */}

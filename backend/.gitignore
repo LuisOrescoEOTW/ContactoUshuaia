@@ -4,7 +4,7 @@
 venv/
 
 # Archivos de configuración locales
-#*.env
+*.env
 
 # SQLite DB
 #dbContactoUshuaia.db

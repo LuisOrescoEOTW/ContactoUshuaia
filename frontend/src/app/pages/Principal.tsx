@@ -16,6 +16,7 @@ import {
   getPalabrasClavesNombresUnicos,
 } from "../../redux/slices/palabrasClaves/palabrasClavesThunks";
 import { getPreguntas } from "../../redux/slices/preguntasFrecuentes/preguntasFrecuentesThunks";
+import { getAvisos } from "../../redux/slices/Aviso/avisoThunks";
 
 export const Principal = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ export const Principal = () => {
     dispatch(getPalabrasClaves());
     dispatch(getPalabrasClavesNombresUnicos());
     dispatch(getPreguntas());
+    dispatch(getAvisos());
   }, []);
 
   return (

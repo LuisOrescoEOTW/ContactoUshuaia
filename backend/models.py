@@ -50,3 +50,20 @@ class PreguntasFrecuentes(Base):
     pregunta = Column(String)
     respuesta = Column(String)
     deleted = Column(Boolean, default=False)
+
+class Aviso(Base):
+    __tablename__ = "Aviso"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String)
+    email = Column(String)
+    deleted = Column(Boolean, default=False)
+class Puntuar(Base):
+    __tablename__ = "Puntuar"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    rubrosXcontratistasId = Column(Integer, ForeignKey("RubrosXContratistas.id"))  # clave foránea
+    usuario = Column(String)
+    puntaje = Column(Integer)
+    deleted = Column(Boolean, default=False)
+    rubrosXcontratistas = relationship("RubrosXContratistas")  # relación

@@ -11,27 +11,22 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import type { IpreguntasFrecuentes } from "../models/IpreguntasFrecuentes";
-import { postPreguntas, putPreguntas } from "../../redux/slices/preguntasFrecuentes/preguntasFrecuentesThunks";
+import type { Iaviso } from "../models/Iaviso";
+import { postAvisos, putAvisos } from "../../redux/slices/Aviso/avisoThunks";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  editState: IpreguntasFrecuentes | null;
+  editState: Iaviso | null;
 }
 
-export const PreguntasFrecuentesForm: React.FC<Props> = ({
-  open,
-  onClose,
-  editState,
-}) => {
-  //Leer
+export const AvisosForm: React.FC<Props> = ({ open, onClose, editState }) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  // Hook useForm
+  // Valores iniciales del formulario
   const inicialState = {
-    pregunta: "",
-    respuesta: "",
+    nombre: "",
+    email: "",
     deleted: false,
   };
 
@@ -40,29 +35,33 @@ export const PreguntasFrecuentesForm: React.FC<Props> = ({
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<IpreguntasFrecuentes>({ defaultValues: inicialState });
+  } = useForm<Iaviso>({
+    defaultValues: inicialState,
+  });
 
-  // Resetear el formulario con los valores de editState cuando cambia
+  // Cuando se edita, resetear con los valores del registro seleccionado
   useEffect(() => {
     if (editState) {
-      reset(editState); // Resetea los valores del formulario con los de editState
+      reset({
+        ...editState,
+      });
     } else {
       reset(inicialState);
     }
   }, [editState, reset]);
 
-  // Guardar (Agregar/Editar)
-  const onSubmit = (data: IpreguntasFrecuentes) => {
+  // Guardar (Agregar / Editar)
+  const onSubmit = (data: Iaviso) => {
     if (editState) {
-      dispatch(putPreguntas(data))
+      dispatch(putAvisos(data))
         .then(() => toast.info("Elemento modificado"))
         .catch(() => toast.error("Error al modificar el elemento"));
     } else {
-      dispatch(postPreguntas(data))
+      dispatch(postAvisos(data))
         .then(() => toast.success("Elemento agregado"))
         .catch(() => toast.error("Error al agregar el elemento"));
     }
-    onClose(); // Cerrar modal después de agregar/editar
+    onClose(); // cerrar modal
   };
 
   return (
@@ -78,45 +77,43 @@ export const PreguntasFrecuentesForm: React.FC<Props> = ({
           margin: "10px",
         }}
       >
-        {editState ? "Editar Pregunta Frecuente" : "Nueva Pregunta Frecuente"}
+        {editState ? "Editar Aviso" : "Nuevo Aviso"}
       </DialogTitle>
 
       <DialogContent>
+        {/* Email */}
         <Controller
-          name="pregunta"
+          name="nombre"
           control={control}
-          rules={{ required: "La pregunta es obligatoria" }}
+          rules={{ required: "El nombre es obligatorio" }}
           render={({ field }) => (
             <TextField
               {...field}
               margin="dense"
-              label="Pregunta"
+              label="Nombre"
               fullWidth
-              multiline
-              minRows={2}
-              error={!!errors.pregunta}
-              helperText={errors.pregunta?.message}
+              error={!!errors.nombre}
+              helperText={errors.nombre?.message}
             />
           )}
         />
         <Controller
-          name="respuesta"
+          name="email"
           control={control}
-          rules={{ required: "La respuesta es obligatoria" }}
+          rules={{ required: "El email es obligatorio" }}
           render={({ field }) => (
             <TextField
               {...field}
               margin="dense"
-              label="Respuesta"
+              label="Email"
               fullWidth
-              multiline
-              minRows={3}
-              error={!!errors.respuesta}
-              helperText={errors.respuesta?.message}
+              error={!!errors.email}
+              helperText={errors.email?.message}
             />
           )}
         />
       </DialogContent>
+
       <DialogActions>
         <Button onClick={onClose} variant="contained" color="error">
           Cancelar
@@ -132,4 +129,3 @@ export const PreguntasFrecuentesForm: React.FC<Props> = ({
     </Dialog>
   );
 };
-

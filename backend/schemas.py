@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
+from pydantic import BaseModel, EmailStr
 
 class Rubros(BaseModel):
     id: Optional[int] = None
@@ -49,3 +50,24 @@ class PreguntasFrecuentes(BaseModel):
     deleted: bool | None = False
     class Config:
         from_attributes = True  # Linux
+
+class Aviso(BaseModel):
+    id: Optional[int] = None
+    nombre: str
+    email: str
+    deleted: bool | None = False
+    class Config:
+        from_attributes = True  # Linux
+
+class Puntuar(BaseModel):
+    id: Optional[int] = None
+    usuario: str
+    puntaje: int
+    rubrosXcontratistasId: int  # clave foránea
+    deleted: bool | None = False
+    rubrosXcontratistas: Optional[RubrosXContratistas] = None # relación
+    class Config:
+        from_attributes = True  # Linux
+
+# ... (otros modelos que ya tienes)
+

@@ -98,7 +98,17 @@ export const putRubrosXContratistasRefresh = (data: IrubroXContratista) => {
   };
 };
 
-
+//Modificar y SIN Actualizar
+export const putRubrosXContratistasSinRefresh = (data: IrubroXContratista) => {
+  return async () => {
+    try {
+      await Api.put(`/RubrosXContratistas/${data.id}`, data);
+      // No se actualiza la lista
+    } catch (error) {
+      console.error("Error en put:", error);
+    }
+  };
+};
 
 //Eliminar
 export const deleteRubrosXContratistas = (data: number, contratista:number) => {

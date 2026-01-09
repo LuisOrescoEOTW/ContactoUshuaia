@@ -1,7 +1,7 @@
 import { Person } from "@mui/icons-material";
 import { Card, CardContent, Rating, Typography } from "@mui/material";
 import { Box, Stack } from "@mui/system";
-import { Puntuar } from "../components/Puntuar";
+import { PuntuarForm } from "../components/PuntuarForm";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";
 import { useMemo, useState } from "react";
@@ -293,7 +293,7 @@ export const PrincipalRubrosXCont = () => {
       </Box>
 
       {/* Formulario Puntuar */}
-      <Puntuar
+      <PuntuarForm
         open={modal}
         onClose={() => (setModal(false), setEditState(null))}
         editState={editState}

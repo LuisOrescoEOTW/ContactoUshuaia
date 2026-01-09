@@ -17,22 +17,26 @@ import { getRubros } from "../../redux/slices/rubros/rubrosThunks";
 import { getPalabrasClaves } from "../../redux/slices/palabrasClaves/palabrasClavesThunks";
 import { getPreguntas } from "../../redux/slices/preguntasFrecuentes/preguntasFrecuentesThunks";
 import { vaciarRubrosXContratistas } from "../../redux/slices/rubrosXContratistas/rubrosXContratistasThunks";
+import { getPuntajes } from "../../redux/slices/Puntuar/puntuarThunks";
+import { Puntuar } from "./Puntuar";
+import { Avisos } from "./Avisos";
 
 export const Admin = () => {
   //Datos Inciales
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  
+
   useEffect(() => {
     dispatch(getContratistas());
     dispatch(getRubros());
     dispatch(getPalabrasClaves());
     dispatch(getPreguntas());
     dispatch(vaciarRubrosXContratistas());
+    dispatch(getPuntajes());
   }, [dispatch]);
-  
+
   const [contratistaSelect, setContratistaSelect] =
-  useState<Icontratista | null>(null);
+    useState<Icontratista | null>(null);
 
   const handleLogout = async () => {
     try {
@@ -65,14 +69,26 @@ export const Admin = () => {
           width: "99vw",
         }}
       >
+        <Puntuar />
         <PalabrasClaves />
-        <PreguntasFrecuentes />
       </div>
+      <div
+        style={{
+          marginTop: "10px",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          width: "99vw",
+        }}
+      >
+        <PreguntasFrecuentes />
+        <Avisos />
+      </div>
+
       <div
         style={{
           display: "flex",
           justifyContent: "flex-end",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: "1fr 1fr 1fr",
           padding: "2%",
           marginTop: "20px",
         }}
