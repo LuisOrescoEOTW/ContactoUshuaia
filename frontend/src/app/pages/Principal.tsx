@@ -1,5 +1,5 @@
 import imagen from "../images/logo.png";
-import { Box, Typography } from "@mui/material";
+import { Box, Divider, Fab, Tooltip, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { PrincipalPregFrec } from "./PrincipalPregFrec";
 import { PrincipalCuadroPequeño } from "./PrincipalCuadroPequeño";
@@ -17,6 +17,8 @@ import {
 } from "../../redux/slices/palabrasClaves/palabrasClavesThunks";
 import { getPreguntas } from "../../redux/slices/preguntasFrecuentes/preguntasFrecuentesThunks";
 import { getAvisos } from "../../redux/slices/Aviso/avisoThunks";
+import { Firma } from "./Firma";
+import { Add, AdminPanelSettings } from "@mui/icons-material";
 
 export const Principal = () => {
   const navigate = useNavigate();
@@ -38,58 +40,87 @@ export const Principal = () => {
       <PrincipalCuadroPequeño />
 
       {/* Recuadro azul */}
-      <div
-        id="logoInicio"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          backgroundColor: "#008F9E",
-          padding: "1%",
-          width: "100%",
-          color: "white",
-          fontSize: "20px",
-          fontWeight: "bold",
-        }}
-      >
-        <a
-          href="#acercaDelSitio"
-          style={{ color: "white", textDecoration: "none" }}
-        >
-          Acerca del Sitio
-        </a>
-
+      <div style={{ width: "100%", height: "100%" }}>
         <div
+          id="logoInicio"
           style={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <img
-            src={imagen}
-            style={{
-              maxHeight: "80%",
-              maxWidth: "80%",
-              objectFit: "contain",
-            }}
-          />
-        </div>
-
-        <a
-          href="#preguntasFrecuentes"
-          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            backgroundColor: "#008F9E",
+            padding: "5%",
+            width: "100%",
             color: "white",
-            textDecoration: "none",
-            textAlign: "end",
+            fontSize: "20px",
           }}
         >
-          Preguntas Frecuentes
-        </a>
-      </div>
+          <a
+            href="#acercaDelSitio"
+            style={{ color: "white", textDecoration: "none" }}
+          >
+            <Typography
+              sx={{
+                fontSize: {
+                  xs: "1rem", // celular
+                  sm: "1.1rem",
+                  md: "1.5rem", // desktop (h5 aprox)
+                },
+              }}
+            >
+              Acerca del Sitio
+            </Typography>
+          </a>
 
-      {/* Buscar */}
-      <PrincipalBuscador />
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "20px",
+              marginBottom: "20px",
+            }}
+          >
+            <Box
+              sx={{
+                mt: { xs: "30%", sm: "10%", md: "0%" },
+                mb: { xs: "30%", sm: "10%", md: "0%" },
+              }}
+            >
+              <img
+                src={imagen}
+                style={{
+                  maxHeight: "100%",
+                  maxWidth: "100%",
+                  objectFit: "contain",
+                }}
+              />
+            </Box>
+          </div>
+
+          <a
+            href="#preguntasFrecuentes"
+            style={{
+              color: "white",
+              textDecoration: "none",
+              textAlign: "end",
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: {
+                  xs: "1rem", // celular
+                  sm: "1.1rem",
+                  md: "1.5rem", // desktop (h5 aprox)
+                },
+              }}
+            >
+              Preguntas Frecuentes
+            </Typography>
+          </a>
+        </div>
+        {/* Buscar */}
+        <PrincipalBuscador />
+      </div>
 
       {/* Mostrar Contratistas por Rubro */}
       <PrincipalRubrosXCont />
@@ -101,40 +132,42 @@ export const Principal = () => {
       </Box>
 
       {/* Pie de Página */}
+      <a href="#logoInicio">
+        <Typography
+          sx={{
+            textAlign: "center",
+            textDecoration: "none",
+            color: "whitesmoke",
+            backgroundColor: "#1D2A4B",
+            p: 5,
+            fontSize: {
+              xs: "1.1rem", // celular
+              sm: "1.1rem",
+              md: "1.5rem", // desktop (h5 aprox)
+              cursor: "pointer",
+            },
+          }}
+        >
+          Volver al inicio
+        </Typography>
+      </a>
+      <Divider/>
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr",
-          backgroundColor: "black",
+          gridTemplateColumns: "1fr 1fr",
+          backgroundColor: "#1D2A4B",
           padding: "2%",
           color: "GrayText",
         }}
       >
-        <a
-          href="#logoInicio"
-          style={{
-            textAlign: "center",
-            textDecoration: "none",
-            color: "whitesmoke",
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: {
-                xs: "1.1rem", // celular
-                sm: "1.1rem",
-                md: "1.5rem", // desktop (h5 aprox)
-              },
-            }}
-          >
-            Volver al inicio
-          </Typography>
-        </a>
-        <a
-          style={{ textAlign: "right", cursor: "pointer" }}
-          onClick={() => navigate("/admin")}
-        >
-          Admin
+        <Firma />
+        <a style={{ textAlign: "end", alignContent: "end", alignItems: "end" }}>
+          <Tooltip title="Administrador">
+            <Fab color="success" size="small">
+              <AdminPanelSettings onClick={() => navigate("/admin")} />
+            </Fab>
+          </Tooltip>
         </a>
       </div>
     </>
