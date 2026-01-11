@@ -135,9 +135,10 @@ export const RubrosForm: React.FC<Props> = ({
             />
           )}
         />
-        <Controller
-          name="icono"
-          control={control}
+
+        {/* <Controller */}
+          {/* name="icono" */}
+          {/* control={control}
           render={({ field }) => (
             <TextField
               {...field}
@@ -147,8 +148,8 @@ export const RubrosForm: React.FC<Props> = ({
               error={!!errors.icono}
               helperText={errors.icono?.message}
             />
-          )}
-        />
+          )} */}
+        {/* /> */}
 
         {/* Imagen */}
         {/* Input oculto */}
@@ -162,7 +163,6 @@ export const RubrosForm: React.FC<Props> = ({
 
         <div style={{ textAlign: "right", marginTop: "20px", display: "flex", gap: "10px", justifyContent: "flex-end" }}>
           {/* Botones */}
-
           <Tooltip title="Agregar Imagen">
             <Fab
               color="success"

@@ -6,8 +6,8 @@ import type { Icontratista } from "../models/Icontratista";
 import { Rubros } from "./Rubros";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase";
-import { Link, useNavigate } from "react-router-dom";
-import { Box, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
 import { toast } from "react-toastify";
 import { PreguntasFrecuentes } from "./PreguntasFrecuentes";
 import { useDispatch } from "react-redux";
@@ -20,6 +20,7 @@ import { vaciarRubrosXContratistas } from "../../redux/slices/rubrosXContratista
 import { getPuntajes } from "../../redux/slices/Puntuar/puntuarThunks";
 import { Puntuar } from "./Puntuar";
 import { Avisos } from "./Avisos";
+import { KeyboardBackspace, Logout } from "@mui/icons-material";
 
 export const Admin = () => {
   //Datos Inciales
@@ -46,6 +47,10 @@ export const Admin = () => {
     } catch (error) {
       toast.error("No se pudo cerrar sesión");
     }
+  };
+
+  const handlePrincipal = async () => {
+    navigate("/principal");
   };
 
   return (
@@ -88,18 +93,17 @@ export const Admin = () => {
         style={{
           display: "flex",
           justifyContent: "flex-end",
-          gridTemplateColumns: "1fr 1fr 1fr",
           padding: "2%",
-          marginTop: "20px",
+          // marginTop: "20px",
         }}
       >
-        <div style={{ flexGrow: 1 }}>
-          <Box mt={2} display="flex" justifyContent="space-between">
-            <Link to="/">Ir a Pantalla Principal</Link>
-          </Box>
+        <div>
+          <Button variant="contained" startIcon={<KeyboardBackspace />} color="info" onClick={handlePrincipal}>
+            Ir a Pantalla Principal
+          </Button>
         </div>
-        <div style={{ flexGrow: 1 }}>
-          <Button variant="contained" color="error" onClick={handleLogout}>
+        <div style={{ marginLeft: "50px" }}>
+          <Button variant="contained" startIcon={<Logout />} color="error" onClick={handleLogout}>
             Cerrar sesión
           </Button>
         </div>

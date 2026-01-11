@@ -1,4 +1,3 @@
-import { data } from "react-router-dom";
 import { Api } from "../../../api/api";
 import type { Iaviso } from "../../../app/models/Iaviso";
 import type { AppDispatch } from "../../store";
