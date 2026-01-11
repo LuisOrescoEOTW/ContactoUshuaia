@@ -136,21 +136,6 @@ export const RubrosForm: React.FC<Props> = ({
           )}
         />
 
-        {/* <Controller */}
-          {/* name="icono" */}
-          {/* control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              margin="dense"
-              label="Icono"
-              fullWidth
-              error={!!errors.icono}
-              helperText={errors.icono?.message}
-            />
-          )} */}
-        {/* /> */}
-
         {/* Imagen */}
         {/* Input oculto */}
         <input

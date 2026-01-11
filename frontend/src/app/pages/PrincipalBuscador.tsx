@@ -3,10 +3,13 @@ import { Box } from "@mui/system";
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";
-import buscarImg from '../images/buscar.png';
+import buscarImg from "../images/buscar.png";
 
 // Import dinámico para iconos de rubros
-const iconos = import.meta.glob('../images/iconos/*.png', { eager: true, import: 'default' }) as Record<string, string>;
+const iconos = import.meta.glob("../images/iconos/*.png", {
+  eager: true,
+  import: "default",
+}) as Record<string, string>;
 
 export const PrincipalBuscador = () => {
   const rubros = useSelector((state: RootState) => state.rubros.rubros);
@@ -42,7 +45,13 @@ export const PrincipalBuscador = () => {
   return (
     <>
       {/* 🔎 Buscador */}
-      <Box sx={{ display: "flex", justifyContent: "center", p: { xs: 1, sm: 4, md: 6 } }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          p: { xs: 1, sm: 4, md: 6 },
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -53,7 +62,6 @@ export const PrincipalBuscador = () => {
             width: { xs: "90%", sm: "70%", md: "50%" },
             mt: { xs: "10%", sm: "10%", md: "0%" },
             mb: { xs: "10%", sm: "10%", md: "0%" },
-            // maxWidth: 600,
             backgroundColor: "#008F9E",
           }}
         >

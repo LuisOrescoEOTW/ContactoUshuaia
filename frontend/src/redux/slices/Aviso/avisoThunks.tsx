@@ -39,7 +39,7 @@ export const postAvisos = (data: Iaviso) => {
   };
 };
 
-// POST http://localhost:8000/EnviarAviso/
+// POST
 export const postEnviarAviso = (data: Iaviso) => {
   return async () => {
     try {

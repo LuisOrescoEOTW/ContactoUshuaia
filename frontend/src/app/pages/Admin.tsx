@@ -94,7 +94,6 @@ export const Admin = () => {
           display: "flex",
           justifyContent: "flex-end",
           padding: "2%",
-          // marginTop: "20px",
         }}
       >
         <div>

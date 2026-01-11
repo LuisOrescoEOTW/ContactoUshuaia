@@ -18,7 +18,7 @@ import {
 import { getPreguntas } from "../../redux/slices/preguntasFrecuentes/preguntasFrecuentesThunks";
 import { getAvisos } from "../../redux/slices/Aviso/avisoThunks";
 import { Firma } from "./Firma";
-import { Add, AdminPanelSettings } from "@mui/icons-material";
+import { AdminPanelSettings } from "@mui/icons-material";
 
 export const Principal = () => {
   const navigate = useNavigate();

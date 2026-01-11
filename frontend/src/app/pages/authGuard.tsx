@@ -1,4 +1,3 @@
-// src/app/pages/authGuard.tsx
 import React, { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import type { User } from "firebase/auth";
