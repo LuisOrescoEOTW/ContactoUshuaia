@@ -121,3 +121,15 @@ export const deleteRubrosXContratistas = (data: number, contratista:number) => {
     }
   };
 };
+
+//Eliminar Fisico
+export const deleteRubrosXContratistasFisico = (data: number, contratista:number) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      await Api.delete(`/RubrosXContratistas/Fisico/${data}`);
+      dispatch(getRubroXContratistasById(contratista)); // Para refrescar la lista después de actualizar
+    } catch (error) {
+      console.error("Error en delete:", error);
+    }
+  };
+};

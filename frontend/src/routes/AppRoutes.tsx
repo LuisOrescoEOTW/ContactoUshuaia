@@ -8,24 +8,26 @@ import { AuthGuard } from "../app/pages/authGuard";
 
 export const AppRoutes: React.FC = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Principal />} />
+    <>
+      <Routes>
+        <Route path="/" element={<Principal />} />
 
-      <Route path="/login" element={<Login />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
-      {/* Ruta protegida: solo accesible si AuthGuard permite */}
-      <Route
-        path="/admin"
-        element={
-          <AuthGuard>
-            <Admin />
-          </AuthGuard>
-        }
-      />
+        {/* Ruta protegida: solo accesible si AuthGuard permite */}
+        <Route
+          path="/admin"
+          element={
+            <AuthGuard>
+              <Admin />
+            </AuthGuard>
+          }
+        />
 
-      {/* cualquier otra URL redirige al root */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* cualquier otra URL redirige al root */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   );
 };

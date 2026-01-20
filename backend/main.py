@@ -102,6 +102,17 @@ def actualizarContratistas(contratistas_id: int, registro: schemas.Contratistas,
 def borrarContratistas(contratistas_id: int, db: Session = Depends(get_db)):
     return contratista_crud.logical_delete(db, contratistas_id)
 
+@app.delete("/Contratistas/Fisico/{contratistas_id}")
+def borrarContratistasFisico(contratistas_id: int, db: Session = Depends(get_db)):
+    # Primero buscamos todos los RubrosXContratistas asociados
+    rubros_asociados = db.query(models.RubrosXContratistas).filter(
+        models.RubrosXContratistas.contratistasId == contratistas_id
+    ).all()
+    # Eliminamos físicamente cada RubrosXContratistas
+    for rubro in rubros_asociados:
+        rubroxcontratista_crud.delete(db, rubro.id)
+    return contratista_crud.delete(db, contratistas_id)
+
 # ==== ENDPOINTS RUBROS X CONTRATISTAS ====
 @app.get("/RubrosXContratistas/", response_model=list[schemas.RubrosXContratistas])
 def listarRubrosXContratistas(db: Session = Depends(get_db)):
@@ -130,6 +141,10 @@ def actualizarRubrosXContratistas(rubroxcontratista_id: int, registro: schemas.R
 @app.delete("/RubrosXContratistas/{rubroxcontratista_id}")
 def borrarRubrosXContratistas(rubroxcontratista_id: int, db: Session = Depends(get_db)):
     return rubroxcontratista_crud.logical_delete(db, rubroxcontratista_id)
+
+@app.delete("/RubrosXContratistas/Fisico/{rubros_x_contratistas_id}")
+def borrarRubrosXContratistasFisico(rubros_x_contratistas_id: int, db: Session = Depends(get_db)):
+    return rubroxcontratista_crud.delete(db, rubros_x_contratistas_id)
 
 # ==== ENDPOINTS PALABRAS CLAVES ====
 @app.get("/PalabrasClaves/", response_model=list[schemas.PalabrasClaves])
@@ -160,6 +175,10 @@ def actualizarPalabraClave(palabra_clave_id: int, registro: schemas.PalabrasClav
 def borrarPalabraClave(palabra_clave_id: int, db: Session = Depends(get_db)):
     return palabra_clave_crud.logical_delete(db, palabra_clave_id)
 
+@app.delete("/PalabrasClaves/Fisico/{palabra_clave_id}")
+def borrarPalabraClaveFisico(palabra_clave_id: int, db: Session = Depends(get_db)):
+    return palabra_clave_crud.delete(db, palabra_clave_id)
+
 # ==== ENDPOINTS PREGUNTAS FRECUENTES ====
 @app.get("/PreguntasFrecuentes/", response_model=list[schemas.PreguntasFrecuentes])
 def listarPreguntasFrecuentes(db: Session = Depends(get_db)):
@@ -180,6 +199,10 @@ def actualizarPreguntasFrecuentes(pregunta_id: int, registro: schemas.PreguntasF
 @app.delete("/PreguntasFrecuentes/{pregunta_id}")
 def borrarPreguntasFrecuentes(pregunta_id: int, db: Session = Depends(get_db)):
     return preguntas_crud.logical_delete(db, pregunta_id)
+
+@app.delete("/PreguntasFrecuentes/Fisico/{pregunta_id}")
+def borrarPreguntasFrecuentesFisico(pregunta_id: int, db: Session = Depends(get_db)):
+    return preguntas_crud.delete(db, pregunta_id)
 
 # ==== ENDPOINTS AVISO ====
 @app.get("/Aviso/", response_model=list[schemas.Aviso])
@@ -226,7 +249,6 @@ def borrarPuntuar(puntuar_id: int, db: Session = Depends(get_db)):
 @app.delete("/Puntuar/Fisico/{puntuar_id}")
 def borrarPuntuarFisico(puntuar_id: int, db: Session = Depends(get_db)):
     return puntuar_crud.delete(db, puntuar_id)
-
 
 # ==== ENDPOINTS ENVÍO DE CORREO DE AVISO ====
 @app.post("/EnviarAviso/")

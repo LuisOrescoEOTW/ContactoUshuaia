@@ -75,3 +75,15 @@ export const deletePalabrasClaves = (data: number) => {
     }
   };
 };
+
+//Eliminar Fisico
+export const deletePalabrasClavesFisico = (data: number) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      await Api.delete(`/PalabrasClaves/Fisico/${data}`);
+      dispatch(getPalabrasClaves()); // Para refrescar la lista después de actualizar
+    } catch (error) {
+      console.error("Error en delete:", error);
+    }
+  };
+};

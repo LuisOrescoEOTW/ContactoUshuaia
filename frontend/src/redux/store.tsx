@@ -6,9 +6,11 @@ import { palabrasClavesSlice } from './slices/palabrasClaves/palabrasClavesSlice
 import { preguntasFrecuentesSlice } from './slices/preguntasFrecuentes/preguntasFrecuentesSlice'
 import { avisoSlice } from './slices/Aviso/avisoSlice'
 import { puntuarSlice } from './slices/Puntuar/puntuarSlice'
+import { uiSlice } from './slices/ui/uiSlice'
 
 export const store = configureStore({
   reducer: {
+    ui: uiSlice.reducer, // 👈 NUEVO
     rubros: rubrosSlice.reducer,
     contratistas: contratistasSlice.reducer,    
     rubrosXContratistas: rubrosXContratistasSlice.reducer,

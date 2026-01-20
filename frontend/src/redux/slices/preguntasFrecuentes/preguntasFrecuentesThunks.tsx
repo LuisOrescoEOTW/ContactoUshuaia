@@ -62,3 +62,15 @@ export const deletePreguntas = (data: number) => {
     }
   };
 };
+
+//Eliminar Fisico
+export const deletePreguntasFisico = (data: number) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      await Api.delete(`/PreguntasFrecuentes/Fisico/${data}`);
+      dispatch(getPreguntas()); // Para refrescar la lista después de actualizar
+    } catch (error) {
+      console.error("Error en delete:", error);
+    }
+  };
+};

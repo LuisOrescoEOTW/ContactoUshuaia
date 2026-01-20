@@ -50,3 +50,15 @@ export const deleteContratistas = (data: number) => {
     }
   };
 };
+
+//Eliminar Fisico
+export const deleteContratistasFisico = (data: number) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      await Api.delete(`/Contratistas/Fisico/${data}`);
+      dispatch(getContratistas()); // Para refrescar la lista después de actualizar
+    } catch (error) {
+      console.error("Error en delete:", error);
+    }
+  };
+};

@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { useEffect, useState } from "react";
 import {
-  deleteRubrosXContratistas,
+  deleteRubrosXContratistasFisico,
   getRubroXContratistasById,
   putRubrosXContratistas,
 } from "../../redux/slices/rubrosXContratistas/rubrosXContratistasThunks";
@@ -142,7 +142,7 @@ export const RubrosXContratistas: React.FC<Props> = ({ contratista }) => {
   const handleDialogClose = (confirmDelete: boolean) => {
     if (confirmDelete && deleteId !== null) {
       dispatch(
-        deleteRubrosXContratistas(
+        deleteRubrosXContratistasFisico(
           deleteId,
           contratista?.id ? contratista.id : 0
         )

@@ -3,9 +3,10 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 interface AlertDialogProps {
   open: boolean;
   onClose: (result: boolean) => void; // Cambiado para aceptar un valor booleano
+  mensajeOpt?: string;
 }
 
-export default function AlertDialogEliminar({ open, onClose }: AlertDialogProps) {
+export default function AlertDialogEliminar({ open, onClose, mensajeOpt }: AlertDialogProps) {
   return (
     <Dialog
       open={open}
@@ -19,6 +20,7 @@ export default function AlertDialogEliminar({ open, onClose }: AlertDialogProps)
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           ¿Está seguro de que desea eliminar este registro?
+          {mensajeOpt && <><br /><br />{mensajeOpt}</>}
         </DialogContentText>
       </DialogContent>
       <DialogActions>

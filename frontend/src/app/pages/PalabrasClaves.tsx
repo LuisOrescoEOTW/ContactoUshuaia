@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { useState } from "react";
-import { deletePalabrasClaves } from "../../redux/slices/palabrasClaves/palabrasClavesThunks";
+import { deletePalabrasClavesFisico } from "../../redux/slices/palabrasClaves/palabrasClavesThunks";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { Fab, Paper, Tooltip } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
@@ -84,7 +84,7 @@ export const PalabrasClaves = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const handleDialogClose = (confirmDelete: boolean) => {
     if (confirmDelete && deleteId !== null) {
-      dispatch(deletePalabrasClaves(deleteId))
+      dispatch(deletePalabrasClavesFisico(deleteId))
         .then(() => toast.error("Elemento eliminado"))
         .catch(() => toast.error("Error al eliminar el elemento"));
     }

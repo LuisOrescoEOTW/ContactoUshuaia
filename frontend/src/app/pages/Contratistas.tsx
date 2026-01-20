@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { useState } from "react";
-import { deleteContratistas } from "../../redux/slices/contratistas/contratistasThunks";
+import { deleteContratistasFisico } from "../../redux/slices/contratistas/contratistasThunks";
 import {
   DataGrid,
   type GridColDef,
@@ -13,6 +13,7 @@ import type { Icontratista } from "../models/Icontratista";
 import { toast } from "react-toastify";
 import AlertDialogEliminar from "../hooks/AlertDialogEliminar";
 import { ContratistasForm } from "../components/ContratistasForm";
+import { vaciarRubrosXContratistas } from "../../redux/slices/rubrosXContratistas/rubrosXContratistasThunks";
 
 interface Props {
   contratistaSelect: (value: Icontratista | null) => void;
@@ -97,8 +98,11 @@ export const Contratistas: React.FC<Props> = ({ contratistaSelect }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const handleDialogClose = (confirmDelete: boolean) => {
     if (confirmDelete && deleteId !== null) {
-      dispatch(deleteContratistas(deleteId))
-        .then(() => toast.error("Elemento eliminado"))
+      dispatch(deleteContratistasFisico(deleteId))
+        .then(() => {
+          dispatch(vaciarRubrosXContratistas());
+          toast.error("Elemento eliminado");
+        })
         .catch(() => toast.error("Error al eliminar el elemento"));
     }
     setDeleteId(null);
@@ -170,7 +174,11 @@ export const Contratistas: React.FC<Props> = ({ contratistaSelect }) => {
             editState={editState}
           />
           {/* Modal Eliminar */}
-          <AlertDialogEliminar open={openDialog} onClose={handleDialogClose} />
+          <AlertDialogEliminar
+            open={openDialog}
+            onClose={handleDialogClose}
+            mensajeOpt="Además eliminará los rubros asociados."
+          />
         </>
       )}
     </>

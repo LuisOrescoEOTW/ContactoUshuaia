@@ -68,6 +68,3 @@ class Puntuar(BaseModel):
     rubrosXcontratistas: Optional[RubrosXContratistas] = None # relación
     class Config:
         from_attributes = True  # Linux
-
-# ... (otros modelos que ya tienes)
-
