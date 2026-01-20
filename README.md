@@ -1,8 +1,9 @@
-# ContactoUshuaia
+# Contacto Ushuaia
 Página web para recomendar los contactos de contratistas
 
-# Corre en
-## http://localhost:8080/
+## Página 
+# www.contactoushuaia.com.ar
+## Email
+# ushuaiacontacto@gmail.com
 
-# Docker, levantar contenedores en el directorio: 
-## docker-compose up 
+## Desarrollado por OrescoSoft
