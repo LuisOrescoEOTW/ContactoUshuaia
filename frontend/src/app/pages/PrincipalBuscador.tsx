@@ -60,8 +60,10 @@ export const PrincipalBuscador = () => {
             borderRadius: 2,
             p: 2,
             width: { xs: "90%", sm: "70%", md: "50%" },
-            mt: { xs: "10%", sm: "10%", md: "0%" },
-            mb: { xs: "10%", sm: "10%", md: "0%" },
+            // mt: { xs: "10%", sm: "10%", md: "0%" },
+            // mb: { xs: "10%", sm: "10%", md: "0%" },
+            mt: { xs: 4, sm: 4, md: 0 },
+            mb: { xs: 4, sm: 4, md: 0 },
             backgroundColor: "#008F9E",
           }}
         >
@@ -134,80 +136,82 @@ export const PrincipalBuscador = () => {
         </Box>
       </Box>
 
-      {/* 📌 Resultados */}
-      {rubrosEncontrados.length > 0 ? (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 3,
-            p: 2,
-          }}
-        >
-          <div style={{ color: "#008F9E", fontWeight: "bold" }}>
-            Te pueden ayudar los contratistas del rubro a continuación
-          </div>
-
+      <div style={{ width: "100%" }}>
+        {/* 📌 Resultados */}
+        {rubrosEncontrados.length > 0 ? (
           <Box
             sx={{
               display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "center",
-              gap: 3,
-              textAlign: "center",
-            }}
-          >
-            {rubrosEncontrados.map((rubro) => (
-              <Box key={rubro.id} sx={{ textAlign: "center" }}>
-                <a href={"#" + rubro.nombre}>
-                  <img
-                    src={iconos[`../images/iconos/${rubro.icono}`]}
-                    alt={rubro.nombre}
-                    style={{ width: 60, height: 60 }}
-                  />
-                  <div>{rubro.nombre}</div>
-                </a>
-              </Box>
-            ))}
-          </Box>
-        </Box>
-      ) : (
-        searchValue.trim() === "" && (
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "center",
+              flexDirection: "column",
+              alignItems: "center",
               gap: 3,
               p: 2,
             }}
           >
-            {rubros.map((rubro) => (
-              <Box
-                key={rubro.id}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  textAlign: "center",
-                }}
-              >
-                <a href={"#" + rubro.nombre}>
-                  <img
-                    src={iconos[`../images/iconos/${rubro.icono}`]}
-                    alt={rubro.nombre}
-                    style={{ width: 60, height: 60 }}
-                  />
-                  <div style={{ marginTop: 8, fontWeight: 500 }}>
-                    {rubro.nombre}
-                  </div>
-                </a>
-              </Box>
-            ))}
+            <div style={{ color: "#008F9E", fontWeight: "bold" }}>
+              Te pueden ayudar los contratistas del rubro a continuación
+            </div>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                gap: 3,
+                textAlign: "center",
+              }}
+            >
+              {rubrosEncontrados.map((rubro) => (
+                <Box key={rubro.id} sx={{ textAlign: "center" }}>
+                  <a href={"#" + rubro.nombre}>
+                    <img
+                      src={iconos[`../images/iconos/${rubro.icono}`]}
+                      alt={rubro.nombre}
+                      style={{ width: 60, height: 60 }}
+                    />
+                    <div>{rubro.nombre}</div>
+                  </a>
+                </Box>
+              ))}
+            </Box>
           </Box>
-        )
-      )}
+        ) : (
+          searchValue.trim() === "" && (
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                gap: 3,
+                p: 2,
+              }}
+            >
+              {rubros.map((rubro) => (
+                <Box
+                  key={rubro.id}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    textAlign: "center",
+                  }}
+                >
+                  <a href={"#" + rubro.nombre}>
+                    <img
+                      src={iconos[`../images/iconos/${rubro.icono}`]}
+                      alt={rubro.nombre}
+                      style={{ width: 60, height: 60 }}
+                    />
+                    <div style={{ marginTop: 8, fontWeight: 500 }}>
+                      {rubro.nombre}
+                    </div>
+                  </a>
+                </Box>
+              ))}
+            </Box>
+          )
+        )}
+      </div>
     </>
   );
 };

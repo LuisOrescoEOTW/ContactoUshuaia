@@ -35,12 +35,19 @@ export const Principal = () => {
   }, []);
 
   return (
-    <>
+    <Box
+      sx={{
+        minHeight: "100dvh", // 👈 CLAVE
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       {/* Recuadro pequeño */}
       <PrincipalCuadroPequeño />
 
       {/* Recuadro azul */}
-      <div style={{ width: "100%", height: "100%" }}>
+      <div>
         <div
           id="logoInicio"
           style={{
@@ -82,8 +89,8 @@ export const Principal = () => {
           >
             <Box
               sx={{
-                mt: { xs: "30%", sm: "10%", md: "0%" },
-                mb: { xs: "30%", sm: "10%", md: "0%" },
+                mt: { xs: 4, sm: 3, md: 0 },
+                mb: { xs: 4, sm: 3, md: 0 },
               }}
             >
               <img
@@ -119,11 +126,23 @@ export const Principal = () => {
           </a>
         </div>
         {/* Buscar */}
-        <PrincipalBuscador />
+        <Box
+          component="section"
+          sx={{
+            width: "100%",
+            overflow: "hidden",
+            pb: 4, // ⬅️ espacio real abajo
+            borderBottom: "1px solid #eee", // opcional
+          }}
+        >
+          <PrincipalBuscador />
+        </Box>
       </div>
 
       {/* Mostrar Contratistas por Rubro */}
-      <PrincipalRubrosXCont />
+      <Box sx={{ mt: 2 }}>
+        <PrincipalRubrosXCont />
+      </Box>
 
       {/* acerca del sitio y Preguntas Frecuentes */}
       <Box sx={{ p: 2 }}>
@@ -151,7 +170,7 @@ export const Principal = () => {
           Volver al inicio
         </Typography>
       </a>
-      <Divider/>
+      <Divider />
       <div
         style={{
           display: "grid",
@@ -170,6 +189,6 @@ export const Principal = () => {
           </Tooltip>
         </a>
       </div>
-    </>
+    </Box>
   );
 };

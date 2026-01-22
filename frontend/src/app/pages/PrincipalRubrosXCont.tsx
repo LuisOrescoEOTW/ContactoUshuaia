@@ -99,6 +99,11 @@ export const PrincipalRubrosXCont = () => {
                   fontWeight="bold"
                   color="primary"
                   variant="h4"
+                  fontSize={{
+                    xs: "1.8rem", // celular
+                    sm: "3rem",
+                    md: "3rem", // desktop (h5 aprox)
+                  }}
                   sx={{ textAlign: "left", alignContent: "center" }}
                 >
                   {rubro.nombre}
