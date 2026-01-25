@@ -60,8 +60,6 @@ export const PrincipalBuscador = () => {
             borderRadius: 2,
             p: 2,
             width: { xs: "90%", sm: "70%", md: "50%" },
-            // mt: { xs: "10%", sm: "10%", md: "0%" },
-            // mb: { xs: "10%", sm: "10%", md: "0%" },
             mt: { xs: 4, sm: 4, md: 0 },
             mb: { xs: 4, sm: 4, md: 0 },
             backgroundColor: "#008F9E",

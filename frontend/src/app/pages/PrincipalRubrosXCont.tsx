@@ -94,8 +94,8 @@ export const PrincipalRubrosXCont = () => {
                   src={iconos[`../images/iconos/${rubro.icono}`]}
                   alt={rubro?.nombre}
                   style={{
-                    height: "100px",
-                    width: "100px",
+                    height: "90px",
+                    width: "90px",
                     objectFit: "contain",
                   }}
                 />
@@ -104,7 +104,7 @@ export const PrincipalRubrosXCont = () => {
                   color="primary"
                   variant="h4"
                   fontSize={{
-                    xs: "1.8rem", // celular
+                    xs: "1.7rem", // celular
                     sm: "3rem",
                     md: "3rem", // desktop (h5 aprox)
                   }}
