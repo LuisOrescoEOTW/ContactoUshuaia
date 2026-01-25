@@ -1,4 +1,3 @@
-import { Person } from "@mui/icons-material";
 import { Card, CardContent, Rating, Typography } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import { PuntuarForm } from "../components/PuntuarForm";
@@ -7,9 +6,14 @@ import type { RootState } from "../../redux/store";
 import { useMemo, useState } from "react";
 import type { IrubroXContratista } from "../models/IrubroXContratista";
 import { WhatsAppLink } from "./WhatsAppLink";
+import facebookIcon from "../images/facebookIcon.png";
+import instagramIcon from "../images/instagramIcon.png";
 
 // Import dinámico para iconos de rubros
-const iconos = import.meta.glob('../images/iconos/*.png', { eager: true, import: 'default' }) as Record<string, string>;
+const iconos = import.meta.glob("../images/iconos/*.png", {
+  eager: true,
+  import: "default",
+}) as Record<string, string>;
 
 export const PrincipalRubrosXCont = () => {
   const { rubrosXContratistas = [] } = useSelector(
@@ -159,19 +163,64 @@ export const PrincipalRubrosXCont = () => {
                     key={item.id}
                     sx={{ mb: 2, borderRadius: 3, pl: 2, pr: 2 }}
                   >
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                      <Stack direction="column" alignItems="center" spacing={1}>
-                        <Person
-                          sx={{
-                            color: "primary.main",
-                            fontSize: {
-                              xs: 30,
-                              md: 60,
-                            },
-                            flexShrink: 0,
-                          }}
+                    <Stack direction="row" alignItems="center">
+                      <Stack
+                        direction="column"
+                        alignItems="center"
+                        spacing={{
+                          xs: 3, // mobile
+                          sm: 3,
+                          md: 2, // desktop
+                        }}
+                      >
+                        <WhatsAppLink
+                          phoneNumber={item.contratistas?.telefono || "-"}
                         />
-                        <WhatsAppLink phoneNumber={item.contratistas?.telefono || "-"} />
+                        {/* Facebook */}
+                        {item.contratistas?.facebook && (
+                          <a
+                            href={`https://www.facebook.com/${item.contratistas.facebook}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={`Ir a Facebook`}
+                          >
+                            <Box
+                              component="img"
+                              src={facebookIcon}
+                              sx={{
+                                width: {
+                                  xs: 30, //celular
+                                  md: 60, //PC
+                                },
+                                height: "auto",
+                                cursor: "pointer",
+                              }}
+                            />
+                          </a>
+                        )}
+
+                        {/* Instagram */}
+                        {item.contratistas?.instagram && (
+                          <a
+                            href={`https://www.instagram.com/${item.contratistas.instagram}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={`Ir a Instagram`}
+                          >
+                            <Box
+                              component="img"
+                              src={instagramIcon}
+                              sx={{
+                                width: {
+                                  xs: 30, //celular
+                                  md: 60, //PC
+                                },
+                                height: "auto",
+                                cursor: "pointer",
+                              }}
+                            />
+                          </a>
+                        )}
                       </Stack>
                       <CardContent
                         sx={{
@@ -207,7 +256,6 @@ export const PrincipalRubrosXCont = () => {
                             readOnly
                           />
                         </Typography>
-
                         <Typography
                           sx={{
                             fontSize: {
@@ -222,7 +270,6 @@ export const PrincipalRubrosXCont = () => {
                             {item.contratistas?.telefono || "-"}
                           </span>
                         </Typography>
-
                         <Typography
                           sx={{
                             fontSize: {
@@ -239,23 +286,39 @@ export const PrincipalRubrosXCont = () => {
                             {item.contratistas?.email || "-"}
                           </span>
                         </Typography>
-
-                        <Typography
-                          sx={{
-                            fontSize: {
-                              xs: "1rem", // celular
-                              sm: "1.1rem",
-                              md: "1.2rem", // desktop (h5 aprox)
-                            },
-                          }}
-                        >
-                          <span style={{ color: "black" }}>Matrícula: </span>
-                          <span style={{ color: "gray" }}>
-                            {item.contratistas?.matricula || "-"}
-                          </span>
-                        </Typography>
+                        {item.contratistas?.matricula && (item.rubrosId == 4 || item.rubrosId == 5) && (
+                          <Typography
+                            sx={{
+                              fontSize: {
+                                xs: "1rem", // celular
+                                sm: "1.1rem",
+                                md: "1.2rem", // desktop (h5 aprox)
+                              },
+                            }}
+                          >
+                            <span style={{ color: "black" }}>Matrícula: </span>
+                            <span style={{ color: "gray" }}>
+                              {item.contratistas?.matricula}
+                            </span>
+                          </Typography>
+                        )}
+                        {item.contratistas?.comentario && (
+                          <Typography
+                            sx={{
+                              fontSize: {
+                                xs: "1rem", // celular
+                                sm: "1.1rem",
+                                md: "1.2rem", // desktop (h5 aprox)
+                              },
+                            }}
+                          >
+                            {/* <span style={{ color: "black" }}>Ma: </span> */}
+                            <span style={{ color: "gray" }}>
+                              {item.contratistas?.comentario}
+                            </span>
+                          </Typography>
+                        )}
                       </CardContent>
-
                       <Box
                         onClick={() => handlePuntuar(item)}
                         sx={{

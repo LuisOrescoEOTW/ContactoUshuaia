@@ -19,6 +19,9 @@ class Contratistas(Base):
     telefono = Column(String)
     email = Column(String)
     matricula = Column(String)
+    comentario = Column(String)
+    facebook = Column(String)
+    instagram = Column(String)
     deleted = Column(Boolean, default=False)
 
 class RubrosXContratistas(Base):

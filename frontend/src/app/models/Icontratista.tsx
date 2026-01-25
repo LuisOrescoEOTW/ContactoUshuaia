@@ -4,5 +4,8 @@ export interface Icontratista {
   telefono: string;
   email: string | null;
   matricula: string | null;
+  facebook: string | null;
+  instagram: string | null;
+  comentario: string | null;
   deleted: boolean
 }

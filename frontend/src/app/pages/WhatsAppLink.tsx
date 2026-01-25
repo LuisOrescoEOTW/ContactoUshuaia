@@ -36,8 +36,8 @@ export const WhatsAppLink: React.FC<Props> = ({ phoneNumber }) => {
         src={whatsappIcon}
         sx={{
           width: {
-            xs: 30,
-            md: 60,
+            xs: 40,
+            md: 70,
           },
           height: "auto",
           cursor: "pointer",

@@ -6,7 +6,10 @@ services:
     # 🚨 CAMBIO CLAVE: Usamos la imagen ya construida de Docker Hub
     image: orescosoft/contactoushuaia-backend:latest
     container_name: contacto-backend
-    
+    volumes:
+      - ./data:/app/data
+    environment:
+      DATABASE_URL: sqlite:////app/data/dbContactoUshuaia.db
     ports:
       - "8000:8000"  # Puerto expuesto en la VM. Accedido por el frontend y/o NGINX.
     restart: unless-stopped

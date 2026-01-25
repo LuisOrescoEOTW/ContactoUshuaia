@@ -17,6 +17,9 @@ class Contratistas(BaseModel):
     telefono: str
     email: Optional[str]
     matricula: Optional[str]
+    comentario: Optional[str]
+    facebook: Optional[str]
+    instagram: Optional[str]
     deleted: bool | None = False
     class Config:
         from_attributes = True  # Linux

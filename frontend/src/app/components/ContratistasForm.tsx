@@ -38,6 +38,9 @@ export const ContratistasForm: React.FC<Props> = ({
     telefono: "",
     email: "",
     matricula: "",
+    facebook: "",
+    instagram: "",
+    comentario: "",
     deleted: false,
   };
 
@@ -126,9 +129,8 @@ export const ContratistasForm: React.FC<Props> = ({
           )}
         />
         <Typography variant="body2" color="textSecondary">
-          Ingrese teléfono en formato sin 0 y sin 15.
-          Ejemplo: 2901 123456
-          Puede dejar espacio o guiones o nada entre los números.
+          Ingrese teléfono en formato sin 0 y sin 15. Ejemplo: 2901 123456 Puede
+          dejar espacio o guiones o nada entre los números.
         </Typography>
         <Controller
           name="email"
@@ -159,6 +161,54 @@ export const ContratistasForm: React.FC<Props> = ({
               {...field}
               margin="dense"
               label="Matrícula"
+              fullWidth
+              error={!!errors.matricula}
+              helperText={errors.matricula?.message}
+            />
+          )}
+        />
+        <Controller
+          name="facebook"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              margin="dense"
+              label="Facebook"
+              fullWidth
+              error={!!errors.matricula}
+              helperText={errors.matricula?.message}
+            />
+          )}
+        />
+        <Typography variant="body2" color="textSecondary">
+          Ingrese solo el nombre. Ej: contactoushuaia.
+        </Typography>
+        <Controller
+          name="instagram"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              margin="dense"
+              label="Instagram"
+              fullWidth
+              error={!!errors.matricula}
+              helperText={errors.matricula?.message}
+            />
+          )}
+        />
+        <Typography variant="body2" color="textSecondary">
+          Ingrese solo el nombre. Ej: radiomitre.
+        </Typography>
+        <Controller
+          name="comentario"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              margin="dense"
+              label="Comentario"
               fullWidth
               error={!!errors.matricula}
               helperText={errors.matricula?.message}

@@ -24,7 +24,7 @@ export const PrincipalAcercaDe = () => {
               El gran misterio: la gente con un desastre en casa (o en la obra)
               no encuentra a la gente que sabe cómo arreglarlo. En
               <span style={{ fontWeight: "bold" }}> Ushuaia</span>, el pase de
-              datos de plomeros, puntores, electricistas y demás es por el
+              datos de plomeros, pintores, electricistas y demás es por el
               método prehistórico del boca en boca. ¡Pero eso se acabó. Esto es
               <span style={{ fontWeight: "bold" }}> CONTACTO Ushuaia</span>. Su
               única misión es meter toda esa info en un solo lugar y que
