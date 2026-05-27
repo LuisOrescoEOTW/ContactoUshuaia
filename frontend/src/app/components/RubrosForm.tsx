@@ -135,6 +135,22 @@ export const RubrosForm: React.FC<Props> = ({
             />
           )}
         />
+        
+        <Controller
+          name="icono"
+          control={control}
+          rules={{ required: "El icono es obligatorio" }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              margin="dense"
+              label="Icono"
+              fullWidth
+              error={!!errors.icono}
+              helperText={errors.icono?.message}
+            />
+          )}
+        />
 
         {/* Imagen */}
         {/* Input oculto */}
